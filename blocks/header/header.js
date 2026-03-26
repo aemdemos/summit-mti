@@ -194,11 +194,13 @@ function decorateMegaMenu(navSections) {
     if (hasCategories) {
       navDrop.classList.add('nav-mega');
       // Mark italic items as sub-headers (e.g. "BY TYPE", "BY MARKET")
-      childUl.querySelectorAll(':scope > li > em').forEach((em) => {
+      // Support both li > em (local) and li > p > em (DA)
+      childUl.querySelectorAll(':scope > li > em, :scope > li > p > em').forEach((em) => {
         em.closest('li').classList.add('mega-sub-header');
       });
       // Mark bold items that have child <ul> as category columns
-      childUl.querySelectorAll(':scope > li > strong').forEach((strong) => {
+      // Support both li > strong (local) and li > p > strong (DA)
+      childUl.querySelectorAll(':scope > li > strong, :scope > li > p > strong').forEach((strong) => {
         const li = strong.closest('li');
         if (li.querySelector(':scope > ul')) {
           li.classList.add('mega-category');
@@ -211,7 +213,8 @@ function decorateMegaMenu(navSections) {
         }
       });
       // Mark direct links at the same level as market links
-      childUl.querySelectorAll(':scope > li > a').forEach((a) => {
+      // Support both li > a (local) and li > p > a (DA)
+      childUl.querySelectorAll(':scope > li > a, :scope > li > p > a').forEach((a) => {
         const li = a.closest('li');
         if (!li.classList.contains('mega-category') && !li.classList.contains('mega-sub-header')) {
           li.classList.add('mega-market-link');
@@ -280,6 +283,18 @@ export default async function decorate(block) {
   // Decorate icons in nav tools
   const navTools = nav.querySelector('.nav-tools');
   if (navTools) {
+    // Convert icon images (local <img> or DA <picture>) to icon spans
+    // Icon name is derived from alt text, so authors control icons via the document
+    navTools.querySelectorAll('picture, img').forEach((el) => {
+      const img = el.tagName === 'PICTURE' ? el.querySelector('img') : el;
+      if (!img) return;
+      const alt = img.getAttribute('alt');
+      if (alt) {
+        const span = document.createElement('span');
+        span.className = `icon icon-${alt}`;
+        (el.tagName === 'PICTURE' ? el : img).replaceWith(span);
+      }
+    });
     decorateIcons(navTools);
     // Remove button classes from tools
     navTools.querySelectorAll('.button-container').forEach((bc) => {

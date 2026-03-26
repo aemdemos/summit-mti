@@ -252,8 +252,14 @@ header nav .nav-sections ul > li > ul > li {
     padding: 8px 40px 0;
   }
 
-  /* Hover underline animation */
-  header nav .nav-sections .default-content-wrapper > ul > li > strong::after {
+  /* Reset p margins inside nav items (DA wraps inline content in p) */
+  header nav .nav-sections .default-content-wrapper > ul > li > p {
+    margin: 0;
+  }
+
+  /* Hover underline animation (support both li > strong and li > p > strong from DA) */
+  header nav .nav-sections .default-content-wrapper > ul > li > strong::after,
+  header nav .nav-sections .default-content-wrapper > ul > li > p > strong::after {
     content: '';
     display: block;
     width: 0;
@@ -264,7 +270,9 @@ header nav .nav-sections ul > li > ul > li {
   }
 
   header nav .nav-sections .default-content-wrapper > ul > li:hover > strong::after,
-  header nav .nav-sections .default-content-wrapper > ul > li[aria-expanded='true'] > strong::after {
+  header nav .nav-sections .default-content-wrapper > ul > li[aria-expanded='true'] > strong::after,
+  header nav .nav-sections .default-content-wrapper > ul > li:hover > p > strong::after,
+  header nav .nav-sections .default-content-wrapper > ul > li[aria-expanded='true'] > p > strong::after {
     width: 100%;
   }
 
@@ -344,13 +352,19 @@ header nav .nav-sections ul > li > ul > li {
     margin-right: 24px;
   }
 
-  header nav .nav-sections .nav-mega .mega-category > strong {
+  header nav .nav-sections .nav-mega .mega-category > strong,
+  header nav .nav-sections .nav-mega .mega-category > p > strong {
     display: block;
     font-size: 17.6px;
     font-weight: 700;
     color: #000;
     margin-bottom: 12px;
     font-family: var(--body-font-family);
+  }
+
+  /* Remove default p margins inside mega menu */
+  header nav .nav-sections .nav-mega li > p {
+    margin: 0;
   }
 
   header nav .nav-sections .nav-mega .mega-category > ul {
