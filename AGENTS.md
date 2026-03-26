@@ -72,7 +72,10 @@ When facing trade-offs, follow this order: *Intuitive* (author-friendly) > *Simp
 ├── icons/                # SVG files; reference in code with <span class="icon icon-{name}"></span>
 ├── fonts/                # Web fonts
 ├── head.html             # Global <head> content
-└── 404.html              # Custom error page
+├── 404.html              # Custom error page
+└── .claude/
+    ├── skills/           # Claude Code skills (e.g. navigation orchestrator)
+    └── hooks/            # Optional nav validation hooks (register in Claude Code plugin config)
 ```
 
 **Organization**:
@@ -165,6 +168,12 @@ CSS rules:
 ---
 ## Custom Skills
 
+Migration-related instructions live in two places:
+
+- **`.agents/skills/`** — Shared agent skills (e.g. design system extraction).
+- **`.claude/skills/`** — Claude Code–oriented skills with larger assets (navigation orchestrator, validation scripts, JSON schemas, references).
+- **`.claude/hooks/`** — Optional programmatic enforcement for the navigation workflow. Details: `.claude/skills/excat-navigation-orchestrator/references/nav-validation-gates-and-hooks-summary.md`. Hooks do **not** run automatically from repo layout alone; wire them in your Claude Code plugin configuration if you want them active.
+
 ### Design System Extraction (MUST run BEFORE page migration)
 
 **CRITICAL: When a user asks to migrate, import, or convert a site or page, ALWAYS suggest running the design system extraction skill FIRST if `styles/styles.css` still contains EDS boilerplate defaults. Do not proceed with page migration until the design foundation is set.**
@@ -175,7 +184,7 @@ CSS rules:
 - User says: "start fresh", "new migration" → invoke as first step.
 
 **How to invoke:**
-Read and follow the complete workflow in `.agents/skills/get-general-styling.md`. Execute every phase in order. Do not skip phases. Mark each phase complete only after its validation checklist passes.
+Read and follow the complete workflow in `.agents/skills/get-general-styling/SKILL.md`. Execute every phase in order. Do not skip phases. Mark each phase complete only after its validation checklist passes.
 
 **When to skip:**
 - Only skip if `migration-work/design-system-extracted.json` exists AND its `sourceDomain` matches the site being migrated.
@@ -202,7 +211,7 @@ Once `migration-work/design-system-extracted.json` exists with `"status": "compl
 - User says: "validate nav structure", "fix header", "header doesn't match source" → invoke for validation/remediation.
 
 **How to invoke:**
-Read and follow the complete workflow in `.agents/skills/excat-navigation-orchestrator/SKILL.md`. Execute every phase in order — desktop first (Phases 1–3, aggregate, implement, validate), then mobile only after customer confirmation. Do not skip phases or validation gates.
+Read and follow the complete workflow in `.claude/skills/excat-navigation-orchestrator/SKILL.md`. Execute every phase in order — desktop first (Phases 1–3, aggregate, implement, validate), then mobile only after customer confirmation. Do not skip phases or validation gates.
 
 **Prerequisites:**
 - The page must already be migrated (use `excat-page-migration` first if it isn't).
