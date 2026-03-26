@@ -1,18 +1,38 @@
-/* carousel design tokens */
+/* carousel design tokens — Marvell hero */
 :root {
-  --carousel-content-margin: 68px;
-  --carousel-content-margin-desktop: 92px;
-  --carousel-content-padding: 16px;
-  --carousel-content-background: rgb(19 19 19 / 75%);
+  --carousel-slide-bg: var(--dark-color);
+  --carousel-slide-min-height: 400px;
+  --carousel-eyebrow-color: #c8c9c7;
+  --carousel-eyebrow-size: 13px;
+  --carousel-eyebrow-spacing: 3px;
+  --carousel-heading-color: #fff;
+  --carousel-content-margin: 32px 24px;
+  --carousel-content-margin-desktop: 80px 92px;
+  --carousel-content-padding: 0;
+  --carousel-content-background: transparent;
   --carousel-indicators-gap: 6px 12px;
   --carousel-indicators-padding: 12px;
-  --carousel-indicator-size: 24px;
-  --carousel-indicator-background: #dadada;
-  --carousel-indicator-active-background: var(--text-color);
+  --carousel-indicator-size: 10px;
+  --carousel-indicator-background: rgb(255 255 255 / 40%);
+  --carousel-indicator-active-background: rgb(255 255 255 / 90%);
   --carousel-nav-inset: 12px;
   --carousel-nav-inset-desktop: 24px;
-  --carousel-nav-button-size: 44px;
-  --carousel-nav-button-background: rgb(19 19 19 / 25%);
-  --carousel-nav-button-hover-background: rgb(19 19 19 / 75%);
-  --carousel-transition-duration: 0.2s;
+  --carousel-nav-button-size: 36px;
+  --carousel-nav-button-background: rgb(255 255 255 / 15%);
+  --carousel-nav-button-hover-background: rgb(255 255 255 / 30%);
+  --carousel-transition-duration: 0.3s;
+}
+
+@media (width >= 600px) {
+  :root {
+    --carousel-slide-min-height: 520px;
+    --carousel-eyebrow-size: 15px;
+    --carousel-eyebrow-spacing: 4px;
+  }
+}
+
+@media (width >= 900px) {
+  :root {
+    --carousel-slide-min-height: 620px;
+  }
 }

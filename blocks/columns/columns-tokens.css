@@ -1,4 +1,11 @@
-/* columns design tokens */
+/* columns design tokens — Marvell */
 :root {
-  --columns-gap: 24px;
+  --columns-gap: 40px;
+  --columns-padding-y: 60px;
+}
+
+@media (width >= 900px) {
+  :root {
+    --columns-padding-y: 100px;
+  }
 }

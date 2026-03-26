@@ -1,6 +1,17 @@
-/* tabs design tokens */
+/* tabs design tokens — Marvell markets */
 :root {
-  --tabs-panel-padding: 24px;
-  --tabs-border-color: #dadada;
+  --tabs-panel-padding: 32px 24px;
+  --tabs-border-color: transparent;
   --tabs-transition-duration: 0.2s;
+  --tabs-tab-color: var(--border-color);
+  --tabs-tab-active-color: var(--heading-color);
+  --tabs-tab-font-size: 14px;
+  --tabs-tab-active-border: 2px solid var(--heading-color);
+}
+
+@media (width >= 900px) {
+  :root {
+    --tabs-panel-padding: 40px 0;
+    --tabs-tab-font-size: 16px;
+  }
 }

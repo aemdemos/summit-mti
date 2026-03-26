@@ -1,4 +1,4 @@
-import { getMetadata } from '../../scripts/aem.js';
+import { getMetadata, decorateIcons } from '../../scripts/aem.js';
 import { loadFragment } from '../fragment/fragment.js';
 
 // media query match that indicates mobile/tablet width
@@ -40,7 +40,7 @@ function closeOnFocusLost(e) {
 
 function openOnKeydown(e) {
   const focused = document.activeElement;
-  const isNavDrop = focused.className === 'nav-drop';
+  const isNavDrop = focused.classList.contains('nav-drop');
   if (isNavDrop && (e.code === 'Enter' || e.code === 'Space')) {
     const dropExpanded = focused.getAttribute('aria-expanded') === 'true';
     // eslint-disable-next-line no-use-before-define
@@ -63,6 +63,11 @@ function toggleAllNavSections(sections, expanded = false) {
   sections.querySelectorAll('.nav-sections .default-content-wrapper > ul > li').forEach((section) => {
     section.setAttribute('aria-expanded', expanded);
   });
+  // hide overlay when collapsing all sections
+  const overlay = document.querySelector('.nav-overlay');
+  if (overlay && !expanded) {
+    overlay.classList.remove('nav-overlay-active');
+  }
 }
 
 /**
@@ -175,6 +180,48 @@ async function buildBreadcrumbs() {
 }
 
 /**
+ * Detects mega menu items and adds appropriate classes.
+ * A nav-drop is a mega menu if its child <ul> contains <li> with
+ * nested <ul> (3+ levels of nesting indicating category groups).
+ * @param {Element} navSections The nav sections element
+ */
+function decorateMegaMenu(navSections) {
+  navSections.querySelectorAll('.nav-drop').forEach((navDrop) => {
+    const childUl = navDrop.querySelector(':scope > ul');
+    if (!childUl) return;
+    // Check for deeply nested content (li > strong + ul pattern = category groups)
+    const hasCategories = childUl.querySelector(':scope > li > ul');
+    if (hasCategories) {
+      navDrop.classList.add('nav-mega');
+      // Mark italic items as sub-headers (e.g. "BY TYPE", "BY MARKET")
+      childUl.querySelectorAll(':scope > li > em').forEach((em) => {
+        em.closest('li').classList.add('mega-sub-header');
+      });
+      // Mark bold items that have child <ul> as category columns
+      childUl.querySelectorAll(':scope > li > strong').forEach((strong) => {
+        const li = strong.closest('li');
+        if (li.querySelector(':scope > ul')) {
+          li.classList.add('mega-category');
+        }
+      });
+      // Mark categories with many items for potential multi-column layout
+      childUl.querySelectorAll('.mega-category > ul').forEach((catUl) => {
+        if (catUl.children.length >= 6) {
+          catUl.closest('.mega-category').classList.add('mega-wide');
+        }
+      });
+      // Mark direct links at the same level as market links
+      childUl.querySelectorAll(':scope > li > a').forEach((a) => {
+        const li = a.closest('li');
+        if (!li.classList.contains('mega-category') && !li.classList.contains('mega-sub-header')) {
+          li.classList.add('mega-market-link');
+        }
+      });
+    }
+  });
+}
+
+/**
  * loads and decorates the header, mainly the nav
  * @param {Element} block The header block element
  */
@@ -207,26 +254,38 @@ export default async function decorate(block) {
   if (navSections) {
     navSections.querySelectorAll(':scope .default-content-wrapper > ul > li').forEach((navSection) => {
       if (navSection.querySelector('ul')) navSection.classList.add('nav-drop');
-      navSection.addEventListener('click', () => {
+      navSection.addEventListener('click', (e) => {
         if (isDesktop.matches) {
+          // Prevent click on links inside mega menu from toggling
+          if (e.target.closest('a') && e.target.closest('.nav-mega > ul')) return;
           const expanded = navSection.getAttribute('aria-expanded') === 'true';
           toggleAllNavSections(navSections);
           navSection.setAttribute('aria-expanded', expanded ? 'false' : 'true');
+          // Show/hide overlay for mega menu
+          const overlay = document.querySelector('.nav-overlay');
+          if (overlay && navSection.classList.contains('nav-mega')) {
+            overlay.classList.toggle('nav-overlay-active', !expanded);
+          }
         }
       });
     });
     navSections.querySelectorAll('.button-container').forEach((buttonContainer) => {
       buttonContainer.classList.remove('button-container');
-      buttonContainer.querySelector('.button').classList.remove('button');
+      buttonContainer.querySelector('.button')?.classList.remove('button');
     });
+    // Decorate mega menu structure
+    decorateMegaMenu(navSections);
   }
 
+  // Decorate icons in nav tools
   const navTools = nav.querySelector('.nav-tools');
   if (navTools) {
-    const search = navTools.querySelector('a[href*="search"]');
-    if (search && search.textContent === '') {
-      search.setAttribute('aria-label', 'Search');
-    }
+    decorateIcons(navTools);
+    // Remove button classes from tools
+    navTools.querySelectorAll('.button-container').forEach((bc) => {
+      bc.classList.remove('button-container');
+      bc.querySelector('.button')?.classList.remove('button');
+    });
   }
 
   // hamburger for mobile
@@ -246,6 +305,15 @@ export default async function decorate(block) {
   navWrapper.className = 'nav-wrapper';
   navWrapper.append(nav);
   block.append(navWrapper);
+
+  // Create overlay for mega menu backdrop
+  const overlay = document.createElement('div');
+  overlay.className = 'nav-overlay';
+  overlay.addEventListener('click', () => {
+    toggleAllNavSections(navSections, false);
+    overlay.classList.remove('nav-overlay-active');
+  });
+  block.append(overlay);
 
   if (getMetadata('breadcrumbs').toLowerCase() === 'true') {
     navWrapper.append(await buildBreadcrumbs());
