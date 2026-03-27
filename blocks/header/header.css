@@ -6,6 +6,7 @@ header .nav-wrapper {
   width: 100%;
   z-index: 11;
   position: fixed;
+  border-bottom: 1px solid #ccc;
 }
 
 header nav {
@@ -303,7 +304,6 @@ header nav .nav-sections ul > li > ul > li {
     top: var(--nav-height);
     width: 100vw;
     background-color: var(--background-color);
-    border-top: 1px solid #dbdcda;
     z-index: 100;
     padding: 60px max(40px, calc((100vw - var(--header-nav-max-width-wide, 1410px)) / 2 + 24px)) 40px;
     box-sizing: border-box;
