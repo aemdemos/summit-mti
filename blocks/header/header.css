@@ -430,6 +430,7 @@ header nav .nav-sections ul > li > ul > li {
   /* Reserve space for promo card in mega menus that have one */
   header nav .nav-sections .default-content-wrapper > ul > li.has-mega-promo > ul {
     padding-right: calc(max(40px, (100vw - var(--header-nav-max-width-wide, 1410px)) / 2 + 24px) + 370px);
+    min-height: 470px;
   }
 
   /* Mega menu promo card */
