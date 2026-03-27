@@ -266,7 +266,6 @@ header nav .nav-sections ul > li > ul > li {
     height: 4px;
     background-color: var(--header-tools-color);
     transition: width 0.5s cubic-bezier(0.19, 1, 0.22, 1);
-    margin-top: 5px;
   }
 
   header nav .nav-sections .default-content-wrapper > ul > li:hover > strong::after,
@@ -484,7 +483,7 @@ header nav .nav-tools {
     background-color: var(--header-tools-color);
     transition: width 0.5s cubic-bezier(0.19, 1, 0.22, 1);
     position: absolute;
-    bottom: 0;
+    bottom: 5px;
     left: 0;
   }
 
