@@ -448,10 +448,9 @@ header nav .nav-sections ul > li > ul > li {
     transition: background-size 0.25s ease-out;
     display: flex;
     flex-direction: column;
-    justify-content: center;
     align-items: center;
     text-align: center;
-    padding: 15px 20px;
+    padding: 15px;
     box-sizing: border-box;
   }
 
@@ -460,6 +459,10 @@ header nav .nav-sections ul > li > ul > li {
   }
 
   header nav .nav-sections .nav-mega .mega-promo .mega-promo-text {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
     color: #fff;
     font-size: 24px;
     line-height: 1.2;
@@ -467,7 +470,7 @@ header nav .nav-sections ul > li > ul > li {
 
   header nav .nav-sections .nav-mega .mega-promo .mega-promo-text strong {
     display: block;
-    font-size: 32px;
+    font-size: 42px;
     font-weight: 700;
     color: #fff;
     line-height: 1.2;
@@ -486,7 +489,8 @@ header nav .nav-sections ul > li > ul > li {
     text-transform: uppercase;
     padding: 16px 45px 14px 24px;
     border-radius: 4px;
-    margin-top: 16px;
+    margin-top: 20px;
+    margin-bottom: 15px;
     background-image: url('/icons/nav-arrow-right.svg');
     background-repeat: no-repeat;
     background-size: 8px 13px;
