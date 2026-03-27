@@ -40,16 +40,17 @@ export default async function decorate(block) {
         columns.append(col);
       });
 
-      // Build social links row
-      const socialP = wrapper.querySelector('p.social-links');
+      // Find social links row (paragraph containing icon spans)
+      const allPs = wrapper.querySelectorAll('p');
+      const socialP = [...allPs].find((p) => p.querySelector('.icon'));
       const socialRow = document.createElement('div');
       socialRow.className = 'footer-social';
       if (socialP) {
         socialRow.append(socialP.cloneNode(true));
       }
 
-      // Build copyright row
-      const copyrightP = wrapper.querySelector('p.copyright');
+      // Find copyright row (paragraph containing "Copyright")
+      const copyrightP = [...allPs].find((p) => p.textContent.includes('Copyright'));
       const copyrightRow = document.createElement('div');
       copyrightRow.className = 'footer-copyright';
       if (copyrightP) {
