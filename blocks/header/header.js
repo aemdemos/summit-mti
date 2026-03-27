@@ -312,6 +312,14 @@ export default async function decorate(block) {
           if (overlay && navSection.classList.contains('nav-mega')) {
             overlay.classList.toggle('nav-overlay-active', !expanded);
           }
+          // Close search bar and language selector when opening a mega menu
+          const searchBar = block.querySelector('.nav-search-bar');
+          if (searchBar) {
+            searchBar.classList.remove('nav-search-open');
+            block.querySelector('.nav-search-btn')?.classList.remove('nav-search-active');
+          }
+          const langSel = block.querySelector('.nav-lang-selector');
+          if (langSel) langSel.classList.remove('nav-lang-open');
         }
       });
     });
@@ -344,6 +352,65 @@ export default async function decorate(block) {
       bc.classList.remove('button-container');
       bc.querySelector('.button')?.classList.remove('button');
     });
+    // Build search bar toggle from search icon
+    const searchLi = navTools.querySelector('.icon-search')?.closest('li');
+    if (searchLi) {
+      searchLi.classList.add('nav-search-btn');
+
+      const closeSearch = () => {
+        const bar = block.querySelector('.nav-search-bar');
+        if (bar) bar.classList.remove('nav-search-open');
+        searchLi.classList.remove('nav-search-active');
+      };
+
+      const openSearch = () => {
+        let bar = block.querySelector('.nav-search-bar');
+        if (!bar) {
+          bar = document.createElement('div');
+          bar.className = 'nav-search-bar';
+          const form = document.createElement('form');
+          form.setAttribute('role', 'search');
+          form.addEventListener('submit', (ev) => {
+            ev.preventDefault();
+            const query = form.querySelector('input').value.trim();
+            if (query) {
+              window.location.href = `/search?q=${encodeURIComponent(query)}`;
+            }
+          });
+          const input = document.createElement('input');
+          input.type = 'text';
+          input.setAttribute('placeholder', 'Search Marvell.com');
+          input.setAttribute('aria-label', 'Search');
+          form.append(input);
+          bar.append(form);
+          block.append(bar);
+        }
+        bar.classList.add('nav-search-open');
+        searchLi.classList.add('nav-search-active');
+        // Close any open mega menus and language selector
+        toggleAllNavSections(navSections, false);
+        const overlay = document.querySelector('.nav-overlay');
+        if (overlay) overlay.classList.remove('nav-overlay-active');
+        const langSel = block.querySelector('.nav-lang-selector');
+        if (langSel) langSel.classList.remove('nav-lang-open');
+        bar.querySelector('input').focus();
+      };
+
+      searchLi.addEventListener('click', () => {
+        const bar = block.querySelector('.nav-search-bar');
+        if (bar && bar.classList.contains('nav-search-open')) {
+          closeSearch();
+        } else {
+          openSearch();
+        }
+      });
+
+      // Close search bar on Escape
+      window.addEventListener('keydown', (e) => {
+        if (e.code === 'Escape') closeSearch();
+      });
+    }
+
     // Build language selector dropdown from globe icon with nested links
     const globeLi = navTools.querySelector('.icon-globe')?.closest('li');
     const langUl = globeLi?.querySelector(':scope > ul');
@@ -357,20 +424,32 @@ export default async function decorate(block) {
           a.closest('li').classList.add('nav-lang-active');
         }
       });
+      const closeLang = () => {
+        globeLi.classList.remove('nav-lang-open');
+        const overlay = document.querySelector('.nav-overlay');
+        if (overlay) overlay.classList.remove('nav-overlay-active');
+      };
+
       // Toggle dropdown on click
       globeLi.addEventListener('click', (e) => {
         if (e.target.closest('a')) return; // let link clicks navigate
         e.stopPropagation();
         const isOpen = globeLi.classList.toggle('nav-lang-open');
+        const overlay = document.querySelector('.nav-overlay');
         if (isOpen) {
+          // Close any open mega menus first
+          toggleAllNavSections(navSections, false);
+          if (overlay) overlay.classList.add('nav-overlay-active');
           // Close on outside click
           const closeHandler = (ev) => {
             if (!globeLi.contains(ev.target)) {
-              globeLi.classList.remove('nav-lang-open');
+              closeLang();
               document.removeEventListener('click', closeHandler);
             }
           };
           document.addEventListener('click', closeHandler);
+        } else if (overlay) {
+          overlay.classList.remove('nav-overlay-active');
         }
       });
     }
@@ -400,6 +479,9 @@ export default async function decorate(block) {
   overlay.addEventListener('click', () => {
     toggleAllNavSections(navSections, false);
     overlay.classList.remove('nav-overlay-active');
+    // Also close language selector if open
+    const langSel = block.querySelector('.nav-lang-selector');
+    if (langSel) langSel.classList.remove('nav-lang-open');
   });
   block.append(overlay);
 
