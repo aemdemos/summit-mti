@@ -1,60 +1,127 @@
 @import url('./tabs-tokens.css');
 
+/* tab list */
 .tabs .tabs-list {
   display: flex;
-  gap: 0.5ch;
+  gap: 0;
   max-width: 100%;
-  font-size: var(--body-font-size-xs);
   overflow-x: auto;
+  border-bottom: 1px solid var(--border-color);
+  margin-bottom: 0;
 }
 
-@media (width >= 600px) {
-  .tabs .tabs-list {
-    font-size: var(--body-font-size-s);
-  }
-}
-
-@media (width >= 900px) {
-  .tabs .tabs-list {
-    font-size: var(--body-font-size-m);
-  }
-}
-
+/* tab buttons */
 .tabs .tabs-list button {
   flex: 0 0 max-content;
   margin: 0;
-  border: 1px solid var(--tabs-border-color);
+  border: none;
+  border-bottom: 2px solid transparent;
   border-radius: 0;
-  padding: 0.5em;
-  background-color: var(--light-color);
-  color: initial;
-  font-weight: bold;
-  line-height: unset;
-  text-align: initial;
+  padding: 12px 24px;
+  background-color: transparent;
+  color: var(--tabs-tab-color);
+  font-size: var(--tabs-tab-font-size);
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  line-height: 1.5;
+  text-align: center;
   text-overflow: unset;
   overflow: unset;
-  white-space: unset;
-  transition: background-color var(--tabs-transition-duration);
+  white-space: nowrap;
+  transition: color var(--tabs-transition-duration), border-color var(--tabs-transition-duration);
 }
 
 .tabs .tabs-list button p {
   margin: 0;
 }
 
+.tabs .tabs-list button:hover {
+  color: var(--tabs-tab-active-color);
+  background-color: transparent;
+}
 
 .tabs .tabs-list button[aria-selected='true'] {
-  border-bottom: 1px solid var(--background-color);
-  background-color: var(--background-color);
+  color: var(--tabs-tab-active-color);
+  border-bottom: var(--tabs-tab-active-border);
+  background-color: transparent;
   cursor: initial;
 }
 
+/* tab panels */
 .tabs .tabs-panel {
-  margin-top: -1px;
+  margin-top: 0;
   padding: var(--tabs-panel-padding);
-  border: 1px solid var(--tabs-border-color);
+  border: none;
   overflow: auto;
 }
 
 .tabs .tabs-panel[aria-hidden='true'] {
   display: none;
+}
+
+/* panel content */
+.tabs .tabs-panel h3 {
+  margin-top: 0;
+}
+
+.tabs .tabs-panel p {
+  line-height: 1.75;
+}
+
+/* CTA in panel */
+.tabs .tabs-panel p:last-child a {
+  display: inline-block;
+  margin-top: 8px;
+  padding: 12px 32px;
+  border: 1px solid var(--link-color);
+  font-size: var(--button-font-size);
+  font-weight: var(--button-font-weight);
+  letter-spacing: var(--button-letter-spacing);
+  text-transform: uppercase;
+  text-decoration: none;
+  color: var(--link-color);
+  background: transparent;
+  transition: background-color var(--transition-base), color var(--transition-base);
+}
+
+.tabs .tabs-panel p:last-child a:hover {
+  background-color: var(--link-color);
+  color: #fff;
+}
+
+/* dark section overrides */
+.section.dark .tabs .tabs-list {
+  border-bottom-color: rgb(255 255 255 / 20%);
+}
+
+.section.dark .tabs .tabs-list button {
+  color: rgb(255 255 255 / 50%);
+}
+
+.section.dark .tabs .tabs-list button:hover {
+  color: #fff;
+}
+
+.section.dark .tabs .tabs-list button[aria-selected='true'] {
+  color: #fff;
+  border-bottom-color: #fff;
+}
+
+.section.dark .tabs .tabs-panel h3 {
+  color: #fff;
+}
+
+.section.dark .tabs .tabs-panel p {
+  color: #c8c9c7;
+}
+
+.section.dark .tabs .tabs-panel p:last-child a {
+  border-color: #fff;
+  color: #fff;
+}
+
+.section.dark .tabs .tabs-panel p:last-child a:hover {
+  background-color: #fff;
+  color: var(--dark-color);
 }

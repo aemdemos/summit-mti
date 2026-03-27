@@ -19,6 +19,36 @@
 
 .columns > div > .columns-img-col img {
   display: block;
+  border-radius: 4px;
+}
+
+/* text column */
+.columns > div > div:not(.columns-img-col) h2 {
+  margin-top: 0;
+}
+
+.columns > div > div:not(.columns-img-col) p {
+  line-height: 1.75;
+}
+
+/* CTA as bordered link */
+.columns > div > div:not(.columns-img-col) p:last-child a {
+  display: inline-block;
+  margin-top: 8px;
+  padding: 12px 32px;
+  border: 1px solid currentcolor;
+  font-size: var(--button-font-size);
+  font-weight: var(--button-font-weight);
+  letter-spacing: var(--button-letter-spacing);
+  text-transform: uppercase;
+  text-decoration: none;
+  transition: background-color var(--transition-base), color var(--transition-base);
+}
+
+.columns > div > div:not(.columns-img-col) p:last-child a:hover {
+  background-color: var(--link-color);
+  border-color: var(--link-color);
+  color: #fff;
 }
 
 @media (width >= 900px) {
