@@ -344,6 +344,36 @@ export default async function decorate(block) {
       bc.classList.remove('button-container');
       bc.querySelector('.button')?.classList.remove('button');
     });
+    // Build language selector dropdown from globe icon with nested links
+    const globeLi = navTools.querySelector('.icon-globe')?.closest('li');
+    const langUl = globeLi?.querySelector(':scope > ul');
+    if (globeLi && langUl) {
+      globeLi.classList.add('nav-lang-selector');
+      // Mark the current language as active
+      const currentUrl = window.location.origin;
+      langUl.querySelectorAll('a').forEach((a) => {
+        const linkUrl = new URL(a.href, window.location.origin).origin;
+        if (linkUrl === currentUrl) {
+          a.closest('li').classList.add('nav-lang-active');
+        }
+      });
+      // Toggle dropdown on click
+      globeLi.addEventListener('click', (e) => {
+        if (e.target.closest('a')) return; // let link clicks navigate
+        e.stopPropagation();
+        const isOpen = globeLi.classList.toggle('nav-lang-open');
+        if (isOpen) {
+          // Close on outside click
+          const closeHandler = (ev) => {
+            if (!globeLi.contains(ev.target)) {
+              globeLi.classList.remove('nav-lang-open');
+              document.removeEventListener('click', closeHandler);
+            }
+          };
+          document.addEventListener('click', closeHandler);
+        }
+      });
+    }
   }
 
   // hamburger for mobile
