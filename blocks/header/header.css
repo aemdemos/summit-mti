@@ -436,26 +436,26 @@ header nav .nav-sections ul > li > ul > li {
   header nav .nav-sections .nav-mega .mega-promo {
     position: absolute;
     right: max(40px, calc((100vw - var(--header-nav-max-width-wide, 1410px)) / 2 + 24px));
-    top: 0;
+    top: 60px;
     width: 350px;
     height: 370px;
     background-size: 100% 100%;
-    background-position: 0 0;
+    background-position: 50% 50%;
     background-repeat: no-repeat;
     margin: 0;
     overflow: hidden;
-    transition: 0.25s ease-out;
+    transition: background-size 0.25s ease-out;
     display: flex;
     flex-direction: column;
     justify-content: center;
-    align-items: flex-start;
+    align-items: center;
+    text-align: center;
     padding: 15px 20px;
     box-sizing: border-box;
   }
 
   header nav .nav-sections .nav-mega .mega-promo:hover {
     background-size: 110% 110%;
-    background-position: -5% -5%;
   }
 
   header nav .nav-sections .nav-mega .mega-promo .mega-promo-text {
@@ -476,7 +476,6 @@ header nav .nav-sections ul > li > ul > li {
   /* Promo CTA button - authorable link */
   header nav .nav-sections .nav-mega .mega-promo .mega-promo-cta {
     display: inline-block;
-    align-self: flex-start;
     background-color: #fff;
     color: #000;
     font-size: 0.8rem;
