@@ -361,6 +361,8 @@ export default async function decorate(block) {
         const bar = block.querySelector('.nav-search-bar');
         if (bar) bar.classList.remove('nav-search-open');
         searchLi.classList.remove('nav-search-active');
+        const overlay = document.querySelector('.nav-overlay');
+        if (overlay) overlay.classList.remove('nav-overlay-active');
       };
 
       const openSearch = () => {
@@ -389,10 +391,11 @@ export default async function decorate(block) {
         searchLi.classList.add('nav-search-active');
         // Close any open mega menus and language selector
         toggleAllNavSections(navSections, false);
-        const overlay = document.querySelector('.nav-overlay');
-        if (overlay) overlay.classList.remove('nav-overlay-active');
         const langSel = block.querySelector('.nav-lang-selector');
         if (langSel) langSel.classList.remove('nav-lang-open');
+        // Show overlay behind search bar
+        const overlay = document.querySelector('.nav-overlay');
+        if (overlay) overlay.classList.add('nav-overlay-active');
         bar.querySelector('input').focus();
       };
 
@@ -479,9 +482,14 @@ export default async function decorate(block) {
   overlay.addEventListener('click', () => {
     toggleAllNavSections(navSections, false);
     overlay.classList.remove('nav-overlay-active');
-    // Also close language selector if open
+    // Also close language selector and search bar if open
     const langSel = block.querySelector('.nav-lang-selector');
     if (langSel) langSel.classList.remove('nav-lang-open');
+    const searchBar = block.querySelector('.nav-search-bar');
+    if (searchBar) {
+      searchBar.classList.remove('nav-search-open');
+      block.querySelector('.nav-search-btn')?.classList.remove('nav-search-active');
+    }
   });
   block.append(overlay);
 
