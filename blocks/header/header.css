@@ -301,7 +301,7 @@ header nav .nav-sections ul > li > ul > li {
     display: none;
     position: fixed;
     left: 0;
-    top: var(--nav-height);
+    top: calc(var(--nav-height) + 1px);
     width: 100vw;
     background-color: var(--background-color);
     z-index: 100;
@@ -613,7 +613,7 @@ header nav .nav-tools .button {
 header .nav-overlay {
   display: none;
   position: fixed;
-  top: var(--nav-height);
+  top: calc(var(--nav-height) + 1px);
   left: 0;
   width: 100vw;
   height: 100vh;
