@@ -233,11 +233,23 @@ function decorateMegaMenu(navSections) {
             li.style.backgroundImage = `url('${img.src}')`;
           }
           pic.remove();
-          // Style the CTA (em element becomes the button)
-          const cta = li.querySelector('em');
-          if (cta) {
-            cta.classList.add('mega-promo-cta');
+          // Style the CTA link as a button
+          const ctaLink = li.querySelector(':scope > a, :scope > p > a');
+          if (ctaLink) {
+            ctaLink.classList.add('mega-promo-cta');
           }
+          // Wrap remaining text nodes and strong in a container
+          const textWrapper = document.createElement('div');
+          textWrapper.classList.add('mega-promo-text');
+          [...li.childNodes].forEach((node) => {
+            if (node.nodeType === Node.TEXT_NODE
+              || (node.nodeType === Node.ELEMENT_NODE
+                && node.tagName !== 'A'
+                && !node.classList.contains('mega-promo-cta'))) {
+              textWrapper.append(node);
+            }
+          });
+          li.prepend(textWrapper);
           // Mark parent mega menu as having promo for CSS padding
           navDrop.classList.add('has-mega-promo');
         }

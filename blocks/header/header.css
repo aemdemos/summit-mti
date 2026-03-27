@@ -411,14 +411,14 @@ header nav .nav-sections ul > li > ul > li {
     background-image: url('/icons/nav-arrow-right.svg');
     background-repeat: no-repeat;
     background-size: 10px 15px;
-    background-position: right 10px center;
+    background-position: calc(100% - 10px) 40%;
     padding-right: 33px;
     width: max-content;
+    transition: background-position 0.25s ease-out;
   }
 
   header nav .nav-sections .nav-mega .mega-market-link a:hover {
-    color: var(--header-tools-color);
-    background-position: right 0 center;
+    background-position: 100% 40%;
   }
 
   /* Multi-column for categories with many items (6+) */
@@ -438,28 +438,33 @@ header nav .nav-sections ul > li > ul > li {
     right: max(40px, calc((100vw - var(--header-nav-max-width-wide, 1410px)) / 2 + 24px));
     top: 0;
     width: 350px;
-    height: 100%;
-    background-size: cover;
-    background-position: center;
+    height: 370px;
+    background-size: 100% 100%;
+    background-position: 0 0;
     background-repeat: no-repeat;
-    padding: 0;
     margin: 0;
-  }
-
-  header nav .nav-sections .nav-mega .mega-promo a {
+    overflow: hidden;
+    transition: 0.25s ease-out;
     display: flex;
     flex-direction: column;
     justify-content: center;
     align-items: flex-start;
-    height: 100%;
     padding: 15px 20px;
+    box-sizing: border-box;
+  }
+
+  header nav .nav-sections .nav-mega .mega-promo:hover {
+    background-size: 110% 110%;
+    background-position: -5% -5%;
+  }
+
+  header nav .nav-sections .nav-mega .mega-promo .mega-promo-text {
     color: #fff;
-    text-decoration: none;
     font-size: 24px;
     line-height: 1.2;
   }
 
-  header nav .nav-sections .nav-mega .mega-promo a strong {
+  header nav .nav-sections .nav-mega .mega-promo .mega-promo-text strong {
     display: block;
     font-size: 32px;
     font-weight: 700;
@@ -468,24 +473,30 @@ header nav .nav-sections ul > li > ul > li {
     margin-top: 4px;
   }
 
-  header nav .nav-sections .nav-mega .mega-promo a:hover {
-    color: #fff;
-  }
-
+  /* Promo CTA button - authorable link */
   header nav .nav-sections .nav-mega .mega-promo .mega-promo-cta {
     display: inline-block;
+    align-self: flex-start;
     background-color: #fff;
     color: #000;
-    font-size: 12.8px;
+    font-size: 0.8rem;
     font-weight: 700;
     font-style: normal;
+    letter-spacing: 0.1rem;
+    text-transform: uppercase;
     padding: 16px 45px 14px 24px;
     border-radius: 4px;
     margin-top: 16px;
     background-image: url('/icons/nav-arrow-right.svg');
     background-repeat: no-repeat;
-    background-size: 10px 15px;
-    background-position: right 16px center;
+    background-size: 8px 13px;
+    background-position: calc(100% - 22px) center;
+    transition: background-position 0.25s ease-out;
+    width: max-content;
+  }
+
+  header nav .nav-sections .nav-mega .mega-promo .mega-promo-cta:hover {
+    background-position: calc(100% - 15px) center;
   }
 }
 
