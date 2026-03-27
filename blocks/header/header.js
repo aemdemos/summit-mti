@@ -206,6 +206,15 @@ function decorateMegaMenu(navSections) {
           li.classList.add('mega-category');
         }
       });
+      // Mark headingless items that have child <ul> as continuation columns
+      // This allows authors to split a long list into multiple columns by
+      // creating a new list item with nested links but no bold heading
+      childUl.querySelectorAll(':scope > li').forEach((li) => {
+        if (li.classList.length > 0) return; // already classified
+        if (li.querySelector(':scope > ul') && !li.querySelector(':scope > strong, :scope > p > strong')) {
+          li.classList.add('mega-category');
+        }
+      });
       // Mark categories with many items for potential multi-column layout
       childUl.querySelectorAll('.mega-category > ul').forEach((catUl) => {
         if (catUl.children.length >= 6) {
