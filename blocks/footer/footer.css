@@ -98,13 +98,13 @@ footer .footer-social a:hover {
 
 footer .footer-social .icon {
   display: inline-flex;
-  width: 21px;
   height: 21px;
+  width: auto;
 }
 
 footer .footer-social .icon svg {
-  width: 100%;
   height: 100%;
+  width: auto;
 }
 
 /* Copyright */
@@ -126,5 +126,5 @@ footer .footer-copyright a {
 }
 
 footer .footer-copyright a:hover {
-  color: var(--footer-heading-color);
+  color: var(--footer-link-hover-color);
 }

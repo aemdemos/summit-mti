@@ -54,7 +54,15 @@ export default async function decorate(block) {
       const copyrightRow = document.createElement('div');
       copyrightRow.className = 'footer-copyright';
       if (copyrightP) {
-        copyrightRow.append(copyrightP.cloneNode(true));
+        const clone = copyrightP.cloneNode(true);
+        // Update copyright year dynamically
+        const year = new Date().getFullYear();
+        clone.childNodes.forEach((node) => {
+          if (node.nodeType === Node.TEXT_NODE) {
+            node.textContent = node.textContent.replace(/©\s*\d{4}/, `© ${year}`);
+          }
+        });
+        copyrightRow.append(clone);
       }
 
       // Replace section content with structured footer
