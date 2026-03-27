@@ -303,6 +303,7 @@ header nav .nav-sections ul > li > ul > li {
     top: var(--nav-height);
     width: 100vw;
     background-color: var(--background-color);
+    border-top: 1px solid #dbdcda;
     z-index: 100;
     padding: 60px max(40px, calc((100vw - var(--header-nav-max-width-wide, 1410px)) / 2 + 24px)) 40px;
     box-sizing: border-box;
@@ -314,6 +315,7 @@ header nav .nav-sections ul > li > ul > li {
     font-weight: 400;
     letter-spacing: 0;
     text-transform: none;
+    overflow: visible;
   }
 
   header nav .nav-sections .default-content-wrapper > ul > li.nav-mega[aria-expanded='true'] > ul {
@@ -390,7 +392,7 @@ header nav .nav-sections ul > li > ul > li {
   }
 
   header nav .nav-sections .nav-mega .mega-category > ul > li a:hover {
-    color: var(--header-tools-color);
+    color: #7d7d7d;
   }
 
   /* Mega menu market links (Data Center, Enterprise, Carrier) */
@@ -401,30 +403,89 @@ header nav .nav-sections ul > li > ul > li {
   }
 
   header nav .nav-sections .nav-mega .mega-market-link a {
-    display: inline-flex;
-    align-items: center;
+    display: inline-block;
     font-size: 17.6px;
     font-weight: 700;
     color: #000;
     text-decoration: none;
-    gap: 8px;
-  }
-
-  /* Only show arrow when mega menu is expanded */
-  header nav .nav-sections .default-content-wrapper > ul > li[aria-expanded='true'] .mega-market-link a::after {
-    content: '\25B6';
-    font-size: 10px;
-    color: var(--header-tools-color);
+    background-image: url('/icons/nav-arrow-right.svg');
+    background-repeat: no-repeat;
+    background-size: 10px 15px;
+    background-position: right 10px center;
+    padding-right: 33px;
+    width: max-content;
   }
 
   header nav .nav-sections .nav-mega .mega-market-link a:hover {
     color: var(--header-tools-color);
+    background-position: right 0 center;
   }
 
   /* Multi-column for categories with many items (6+) */
   header nav .nav-sections .nav-mega .mega-wide > ul {
     column-width: 180px;
     column-gap: 48px;
+  }
+
+  /* Reserve space for promo card in mega menus that have one */
+  header nav .nav-sections .default-content-wrapper > ul > li.has-mega-promo > ul {
+    padding-right: calc(max(40px, (100vw - var(--header-nav-max-width-wide, 1410px)) / 2 + 24px) + 370px);
+  }
+
+  /* Mega menu promo card */
+  header nav .nav-sections .nav-mega .mega-promo {
+    position: absolute;
+    right: max(40px, calc((100vw - var(--header-nav-max-width-wide, 1410px)) / 2 + 24px));
+    top: 0;
+    width: 350px;
+    height: 100%;
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+    padding: 0;
+    margin: 0;
+  }
+
+  header nav .nav-sections .nav-mega .mega-promo a {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: flex-start;
+    height: 100%;
+    padding: 15px 20px;
+    color: #fff;
+    text-decoration: none;
+    font-size: 24px;
+    line-height: 1.2;
+  }
+
+  header nav .nav-sections .nav-mega .mega-promo a strong {
+    display: block;
+    font-size: 32px;
+    font-weight: 700;
+    color: #fff;
+    line-height: 1.2;
+    margin-top: 4px;
+  }
+
+  header nav .nav-sections .nav-mega .mega-promo a:hover {
+    color: #fff;
+  }
+
+  header nav .nav-sections .nav-mega .mega-promo .mega-promo-cta {
+    display: inline-block;
+    background-color: #fff;
+    color: #000;
+    font-size: 12.8px;
+    font-weight: 700;
+    font-style: normal;
+    padding: 16px 45px 14px 24px;
+    border-radius: 4px;
+    margin-top: 16px;
+    background-image: url('/icons/nav-arrow-right.svg');
+    background-repeat: no-repeat;
+    background-size: 10px 15px;
+    background-position: right 16px center;
   }
 }
 

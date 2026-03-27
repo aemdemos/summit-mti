@@ -220,6 +220,28 @@ function decorateMegaMenu(navSections) {
           li.classList.add('mega-market-link');
         }
       });
+
+      // Detect promo card items (li with picture in mega menu)
+      childUl.querySelectorAll(':scope > li').forEach((li) => {
+        const pic = li.querySelector('picture');
+        if (pic) {
+          li.classList.remove('mega-market-link');
+          li.classList.add('mega-promo');
+          // Use the picture's img src as background image
+          const img = pic.querySelector('img');
+          if (img) {
+            li.style.backgroundImage = `url('${img.src}')`;
+          }
+          pic.remove();
+          // Style the CTA (em element becomes the button)
+          const cta = li.querySelector('em');
+          if (cta) {
+            cta.classList.add('mega-promo-cta');
+          }
+          // Mark parent mega menu as having promo for CSS padding
+          navDrop.classList.add('has-mega-promo');
+        }
+      });
     }
   });
 }
