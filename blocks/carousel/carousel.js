@@ -43,6 +43,50 @@ function createSlide(row, slideIndex, carouselId) {
   return slide;
 }
 
+const AUTOPLAY_INTERVAL = 5000;
+
+function startAutoplay(block) {
+  let timer = null;
+
+  const advance = () => {
+    const current = parseInt(block.dataset.activeSlide, 10) || 0;
+    showSlide(block, current + 1, 'auto');
+  };
+
+  const start = () => {
+    if (!timer) timer = setInterval(advance, AUTOPLAY_INTERVAL);
+  };
+
+  const stop = () => {
+    clearInterval(timer);
+    timer = null;
+  };
+
+  const reset = () => {
+    stop();
+    start();
+  };
+
+  // Pause on hover
+  block.addEventListener('mouseenter', stop);
+  block.addEventListener('mouseleave', start);
+
+  // Reset timer on manual interaction
+  block.addEventListener('click', (e) => {
+    if (e.target.closest('button')) reset();
+  });
+
+  // Pause when page hidden or carousel out of viewport
+  document.addEventListener('visibilitychange', () => {
+    if (document.hidden) stop(); else start();
+  });
+
+  const observer = new IntersectionObserver(([entry]) => {
+    if (entry.isIntersecting) start(); else stop();
+  }, { threshold: 0.5 });
+  observer.observe(block);
+}
+
 export default async function decorate(block) {
   const blockId = getBlockId('carousel');
   block.setAttribute('id', blockId);
@@ -87,5 +131,6 @@ export default async function decorate(block) {
       e.preventDefault();
       showSlide(block, next, 'auto');
     });
+    startAutoplay(block);
   }
 }

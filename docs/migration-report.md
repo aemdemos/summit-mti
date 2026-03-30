@@ -13,7 +13,7 @@ The homepage is composed of the following sections, listed top to bottom:
 | # | Section | Reference Description | EDS Block | Status |
 |---|---------|----------------------|-----------|--------|
 | 1 | Header / Navigation | Logo, mega menu (Products/Company/Support), language selector, user login, search bar | `header` | Completed |
-| 2 | Hero Carousel | Full-width image carousel with 5 slides. Each slide: background image, category label, H1 title, CTA button | `carousel` | Completed |
+| 2 | Hero Carousel | Centered (max-width 1410px) image carousel with 5 slides. Each slide: dual images (bg + foreground), eyebrow label, H1 title, CTA button. Auto-rotates every 5s. | `carousel` | Completed |
 | 3 | Text + Video (Columns) | "Marvell Enables AI Infrastructure" — left text with H2, paragraph, CTA; right side video thumbnail with play button | `columns` | Pending |
 | 4 | Markets Tabs | "Markets" heading with 3 tabs (Data Center, Enterprise, Carrier). Each tab: image left, H3 + text + link right, prev/next arrows | `tabs` | Pending |
 | 5 | More to Explore (Cards) | H3 section heading + 3 image cards. Each card: background image, H3 title, CTA link | `cards` | Pending |
@@ -29,7 +29,7 @@ The homepage is composed of the following sections, listed top to bottom:
 |-------|-------|-------|
 | **Header** | `blocks/header/header.js`, `blocks/header/header.css` | Full mega menu, language selector, search bar, user login. Conditional bottom border on dropdown open. Mobile hamburger menu. |
 | **Footer** | `blocks/footer/footer.js`, `blocks/footer/footer.css`, `blocks/footer/footer-tokens.css` | 4-column grid, social icons (Facebook, X, YouTube, Instagram, LinkedIn), dynamic copyright year. DA-safe selectors (content-based, not class-based). |
-| **Carousel** | `blocks/carousel/carousel.js`, `blocks/carousel/carousel.css`, `blocks/carousel/carousel-tokens.css` | Full-bleed hero carousel with dark slides, image positioned right (54%), text overlay left with eyebrow/H1/CTA. White filled CTA button with arrow indicator. Nav arrows at bottom-left, dot indicators hidden. Left-edge gradient overlay for image blending. Responsive tokens for mobile/tablet/desktop. |
+| **Carousel** | `blocks/carousel/carousel.js`, `blocks/carousel/carousel.css`, `blocks/carousel/carousel-tokens.css` | Centered hero carousel (max-width 1410px, matching header). Dark slides with dual images: first image as CSS background, second as foreground positioned right (48%) with 40px inner padding. Text overlay left (50% max-width) with eyebrow/H1/CTA. H1 constrained to 400px max-width for 3-line wrapping. White CTA button with SVG arrow and hover slide animation. SVG circle nav arrows at bottom-left (carousel-arrow.svg), dot indicators hidden. Left-edge gradient overlay for text readability. Auto-rotation at 5s interval with pause on hover, visibility, and viewport awareness. Instant slide transitions (no smooth scroll). Responsive tokens for mobile/tablet/desktop. |
 
 ### Pending
 
@@ -63,12 +63,14 @@ The homepage is composed of the following sections, listed top to bottom:
 | YouTube icon | `icons/icon-social-youtube.svg` | Created |
 | Instagram icon | `icons/icon-social-instagram.svg` | Created |
 | LinkedIn icon | `icons/icon-social-linkedin.svg` | Created |
+| Carousel nav arrow | `icons/carousel-arrow.svg` | Created |
+| CTA arrow (right) | `icons/nav-arrow-right.svg` | Created |
 
 ---
 
 ## Key Styling Differences (Our Site vs Reference)
 
-1. ~~**Carousel** — Reference uses full-bleed dark image with text overlay; ours shows image and text side-by-side~~ **RESOLVED**
+1. ~~**Carousel** — Reference uses centered dark carousel with dual images; ours showed image and text side-by-side~~ **RESOLVED**
 2. **Columns** — Reference has dark (#1a1a2e) background section with video play button; ours has white background
 3. **Tabs** — Reference has image+text layout per tab with carousel arrows; ours is text-only
 4. **Cards** — Reference uses background images with gradient overlay and white text; ours shows black placeholder boxes
