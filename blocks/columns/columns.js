@@ -1,8 +1,19 @@
 import { getBlockId } from '../../scripts/scripts.js';
 
-function getVidyardId(src) {
-  const match = src.match(/play\.vidyard\.com\/([a-zA-Z0-9]+)/);
+function getVidyardId(url) {
+  const match = url.match(/play\.vidyard\.com\/([a-zA-Z0-9]+)/);
   return match ? match[1] : null;
+}
+
+function loadVidyardApi() {
+  if (window.VidyardV4) return Promise.resolve();
+  return new Promise((resolve) => {
+    const script = document.createElement('script');
+    script.src = 'https://play.vidyard.com/embed/v4.js';
+    script.async = true;
+    script.onload = resolve;
+    document.head.append(script);
+  });
 }
 
 function openLightbox(videoId) {
@@ -17,16 +28,33 @@ function openLightbox(videoId) {
   closeBtn.setAttribute('aria-label', 'Close video');
   closeBtn.textContent = '\u00d7';
 
-  const iframe = document.createElement('iframe');
-  iframe.src = `https://play.vidyard.com/${videoId}.html?v=4.2&type=inline&autoplay=1`;
-  iframe.setAttribute('allow', 'autoplay; fullscreen');
-  iframe.setAttribute('allowfullscreen', '');
+  const player = document.createElement('div');
+  player.classList.add('columns-lightbox-player');
 
-  content.append(closeBtn, iframe);
+  const embed = document.createElement('img');
+  embed.src = `https://play.vidyard.com/${videoId}.jpg`;
+  embed.className = 'vidyard-player-embed';
+  embed.dataset.uuid = videoId;
+  embed.dataset.v = '4';
+  embed.dataset.type = 'inline';
+  embed.dataset.autoplay = '1';
+  player.append(embed);
+
+  content.append(closeBtn, player);
   overlay.append(content);
   document.body.append(overlay);
 
-  const close = () => overlay.remove();
+  loadVidyardApi().then(() => {
+    if (window.VidyardV4) window.VidyardV4.api.renderDOMPlayers();
+  });
+
+  const close = () => {
+    if (window.VidyardV4) {
+      const players = window.VidyardV4.api.getPlayersByUUID(videoId);
+      if (players && players.length) players[0].pause();
+    }
+    overlay.remove();
+  };
   closeBtn.addEventListener('click', close);
   overlay.addEventListener('click', (e) => {
     if (e.target === overlay) close();
@@ -37,6 +65,24 @@ function openLightbox(videoId) {
       document.removeEventListener('keydown', handler);
     }
   });
+}
+
+function setupVideoColumn(col, videoId) {
+  col.classList.add('columns-img-col');
+
+  const img = document.createElement('img');
+  img.src = `https://play.vidyard.com/${videoId}.jpg`;
+  img.alt = '';
+
+  const p = document.createElement('p');
+  p.append(img);
+  col.replaceChildren(p);
+
+  const playBtn = document.createElement('button');
+  playBtn.classList.add('columns-play-btn');
+  playBtn.setAttribute('aria-label', 'Play video');
+  col.append(playBtn);
+  col.addEventListener('click', () => openLightbox(videoId));
 }
 
 export default function decorate(block) {
@@ -51,6 +97,17 @@ export default function decorate(block) {
 
   [...block.children].forEach((row) => {
     [...row.children].forEach((col) => {
+      // Check for author-editable video link
+      const videoLink = col.querySelector('a[href*="play.vidyard.com"]');
+      if (videoLink) {
+        const videoId = getVidyardId(videoLink.href);
+        if (videoId) {
+          setupVideoColumn(col, videoId);
+          return;
+        }
+      }
+
+      // Fallback: detect Vidyard thumbnail in image src
       const pic = col.querySelector('picture');
       const img = col.querySelector('img');
 
