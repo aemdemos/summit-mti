@@ -1,65 +1,160 @@
 @import url('./columns-tokens.css');
 
+/* Full-width dark background via pseudo-element */
+.columns {
+  position: relative;
+  padding: var(--columns-padding-y) 0;
+}
+
+.columns::before {
+  content: '';
+  position: absolute;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 100vw;
+  top: calc(-1 * var(--columns-bleed-top));
+  bottom: 0;
+  background-color: var(--columns-bg);
+  z-index: 0;
+}
+
+/* Row layout */
 .columns > div {
+  position: relative;
+  z-index: 1;
   display: flex;
   flex-direction: column;
+  gap: var(--columns-gap);
 }
 
-.columns img {
-  width: 100%;
-}
-
+/* Equal columns */
 .columns > div > div {
-  order: 1;
+  flex: 1;
+  min-width: 0;
 }
 
-.columns > div > .columns-img-col {
-  order: 0;
-}
-
-.columns > div > .columns-img-col img {
-  display: block;
-  border-radius: 4px;
-}
-
-/* text column */
+/* Text column — heading */
 .columns > div > div:not(.columns-img-col) h2 {
+  color: var(--columns-heading-color);
   margin-top: 0;
+  margin-bottom: 5px;
 }
 
+/* Text column — body paragraph */
 .columns > div > div:not(.columns-img-col) p {
-  line-height: 1.75;
+  color: var(--columns-text-color);
+  font-size: 15.2px;
+  line-height: 26.6px;
+  margin: 24px 0 15px;
 }
 
-/* CTA as bordered link */
+/* CTA button */
 .columns > div > div:not(.columns-img-col) p:last-child a {
   display: inline-block;
-  margin-top: 8px;
-  padding: 12px 32px;
-  border: 1px solid currentcolor;
+  position: relative;
+  padding: var(--columns-cta-padding);
+  background-color: var(--columns-cta-bg);
+  border: 1px solid var(--columns-cta-bg);
+  border-radius: var(--columns-cta-border-radius);
+  color: var(--columns-cta-color);
   font-size: var(--button-font-size);
   font-weight: var(--button-font-weight);
   letter-spacing: var(--button-letter-spacing);
   text-transform: uppercase;
   text-decoration: none;
-  transition: background-color var(--transition-base), color var(--transition-base);
+  transition: background-color var(--transition-base), border-color var(--transition-base);
+  margin: 0;
 }
 
-.columns > div > div:not(.columns-img-col) p:last-child a:hover {
-  background-color: var(--link-color);
-  border-color: var(--link-color);
+/* CTA arrow icon (blue, same SVG as carousel CTA) */
+.columns > div > div:not(.columns-img-col) p:last-child a::after {
+  content: '';
+  position: absolute;
+  right: 22px;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 10px;
+  height: 15px;
+  background: url('/icons/nav-arrow-right.svg') no-repeat center / contain;
+  transition: right 0.25s ease-out;
+}
+
+.columns > div > div:not(.columns-img-col) p:last-child a:hover::after {
+  right: 15px;
+}
+
+/* Image column */
+.columns .columns-img-col {
+  position: relative;
+  cursor: pointer;
+}
+
+.columns .columns-img-col p {
+  margin: 0;
+}
+
+.columns .columns-img-col img {
+  display: block;
+  width: 100%;
+}
+
+/* Play button overlay */
+.columns .columns-play-btn {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: var(--columns-play-btn-size);
+  height: var(--columns-play-btn-size);
+  background: url('/icons/video-play.svg') no-repeat center / contain;
+  border: none;
+  padding: 0;
+  cursor: pointer;
+  z-index: 2;
+  pointer-events: none;
+}
+
+/* Video lightbox modal */
+.columns-lightbox {
+  position: fixed;
+  inset: 0;
+  z-index: 9999;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: rgb(0 0 0 / 85%);
+}
+
+.columns-lightbox-content {
+  position: relative;
+  width: 90vw;
+  max-width: 960px;
+  aspect-ratio: 16 / 9;
+}
+
+.columns-lightbox-content iframe {
+  width: 100%;
+  height: 100%;
+  border: none;
+}
+
+.columns-lightbox-close {
+  position: absolute;
+  top: -40px;
+  right: 0;
+  background: none;
+  border: none;
   color: #fff;
+  font-size: 32px;
+  cursor: pointer;
+  padding: 0;
+  line-height: 1;
+  margin: 0;
 }
 
 @media (width >= 900px) {
   .columns > div {
+    flex-direction: row;
     align-items: center;
-    flex-direction: unset;
-    gap: var(--columns-gap);
-  }
-
-  .columns > div > div {
-    flex: 1;
-    order: unset;
   }
 }

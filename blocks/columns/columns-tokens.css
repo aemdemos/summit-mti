@@ -1,11 +1,22 @@
 /* columns design tokens — Marvell */
 :root {
-  --columns-gap: 40px;
+  --columns-gap: 32px;
   --columns-padding-y: 60px;
+  --columns-bg: #000;
+  --columns-text-color: #c8c9c7;
+  --columns-heading-color: #fff;
+  --columns-cta-bg: #fff;
+  --columns-cta-color: #000;
+  --columns-cta-border-radius: 4px;
+  --columns-cta-padding: 15px 45px 15px 24px;
+  --columns-play-btn-size: 80px;
+  --columns-bleed-top: 100px;
 }
 
 @media (width >= 900px) {
   :root {
+    --columns-gap: 40px;
     --columns-padding-y: 100px;
+    --columns-play-btn-size: 100px;
   }
 }

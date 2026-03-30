@@ -6,6 +6,8 @@ main > .section > .carousel-wrapper {
   margin: 0 auto;
   padding: 0;
   background-color: var(--carousel-slide-bg);
+  position: relative;
+  z-index: 2;
 }
 
 main > .section:has(.carousel) {
