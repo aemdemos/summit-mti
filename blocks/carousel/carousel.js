@@ -26,7 +26,12 @@ function createSlide(row, slideIndex, carouselId) {
       slide.style.backgroundImage = `url('${bgSrc}')`;
       slide.style.backgroundSize = 'cover';
       slide.style.backgroundPosition = 'center';
-      bgImg.remove();
+      const bgPicture = bgImg.closest('picture') || bgImg;
+      const bgParent = bgPicture.parentElement;
+      bgPicture.remove();
+      if (bgParent && bgParent !== imageCol && !bgParent.children.length) {
+        bgParent.remove();
+      }
     }
   }
 
