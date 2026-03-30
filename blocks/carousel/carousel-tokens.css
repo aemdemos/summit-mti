@@ -1,33 +1,28 @@
 /* carousel design tokens — Marvell hero */
 :root {
-  --carousel-slide-bg: var(--dark-color);
+  --carousel-slide-bg: #000;
   --carousel-slide-min-height: 400px;
   --carousel-eyebrow-color: #c8c9c7;
   --carousel-eyebrow-size: 13px;
   --carousel-eyebrow-spacing: 3px;
   --carousel-heading-color: #fff;
-  --carousel-content-margin: 32px 24px;
-  --carousel-content-margin-desktop: 80px 92px;
-  --carousel-content-padding: 0;
-  --carousel-content-background: transparent;
-  --carousel-indicators-gap: 6px 12px;
-  --carousel-indicators-padding: 12px;
-  --carousel-indicator-size: 10px;
-  --carousel-indicator-background: rgb(255 255 255 / 40%);
-  --carousel-indicator-active-background: rgb(255 255 255 / 90%);
-  --carousel-nav-inset: 12px;
-  --carousel-nav-inset-desktop: 24px;
-  --carousel-nav-button-size: 36px;
-  --carousel-nav-button-background: rgb(255 255 255 / 15%);
-  --carousel-nav-button-hover-background: rgb(255 255 255 / 30%);
+  --carousel-heading-size: 36px;
+  --carousel-heading-line-height: 1.1;
+  --carousel-content-padding: 32px 24px;
+  --carousel-image-width: 100%;
+  --carousel-nav-button-size: 48px;
   --carousel-transition-duration: 0.3s;
 }
 
 @media (width >= 600px) {
   :root {
     --carousel-slide-min-height: 520px;
-    --carousel-eyebrow-size: 15px;
+    --carousel-eyebrow-size: 15.2px;
     --carousel-eyebrow-spacing: 4px;
+    --carousel-heading-size: 52.8px;
+    --carousel-heading-line-height: 57.6px;
+    --carousel-heading-max-width: 400px;
+    --carousel-image-width: 48%;
   }
 }
 

@@ -14,6 +14,22 @@ function createSlide(row, slideIndex, carouselId) {
     slide.append(column);
   });
 
+  // Handle dual images: if image column has 2+ images,
+  // first = slide background, remaining = foreground image(s)
+  const imageCol = slide.querySelector('.carousel-slide-image');
+  if (imageCol) {
+    const imgs = imageCol.querySelectorAll('img');
+    if (imgs.length >= 2) {
+      const bgImg = imgs[0];
+      const bgSrc = bgImg.currentSrc || bgImg.src;
+      slide.classList.add('has-bg-image');
+      slide.style.backgroundImage = `url('${bgSrc}')`;
+      slide.style.backgroundSize = 'cover';
+      slide.style.backgroundPosition = 'center';
+      bgImg.remove();
+    }
+  }
+
   const labeledBy = slide.querySelector('h1, h2, h3, h4, h5, h6');
   if (labeledBy) {
     slide.setAttribute('aria-labelledby', labeledBy.getAttribute('id'));
@@ -64,7 +80,7 @@ export default async function decorate(block) {
       const current = parseInt(block.dataset.activeSlide, 10) || 0;
       const next = e.key === 'ArrowLeft' ? current - 1 : current + 1;
       e.preventDefault();
-      showSlide(block, next, 'smooth');
+      showSlide(block, next, 'auto');
     });
   }
 }
