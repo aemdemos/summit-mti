@@ -13,9 +13,13 @@ export default function decorate(block) {
   [...block.children].forEach((row) => {
     const li = createCard(row);
 
-    // Use the image as CSS background-image on the card for consistent sizing
+    // Skip empty cards (no image and no text content)
     const imgDiv = li.querySelector('.cards-card-image');
     const img = imgDiv?.querySelector('img');
+    const hasText = li.textContent.trim().length > 0;
+    if (!img && !hasText) return;
+
+    // Use the image as CSS background-image on the card for consistent sizing
     if (img) {
       li.style.backgroundImage = `url('${img.src}')`;
       imgDiv.remove();

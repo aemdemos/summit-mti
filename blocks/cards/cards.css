@@ -73,10 +73,6 @@
   transition: right 0.25s ease-out;
 }
 
-.cards .cards-card-body a:hover {
-  opacity: 0.8;
-}
-
 .cards .cards-card-body a:hover::after {
   right: 3px;
 }
