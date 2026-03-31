@@ -4,14 +4,14 @@
   --cards-grid-gap: 30px;
   --cards-card-border-width: 0;
   --cards-card-border-color: transparent;
-  --cards-card-min-height: 260px;
-  --cards-card-padding: 35px;
-  --cards-card-overlay-bg: linear-gradient(to top, rgb(0 0 0 / 70%) 0%, transparent 60%);
-  --cards-heading-font-size: 24px;
-  --cards-heading-font-weight: 500;
-  --cards-heading-line-height: 1.1;
+  --cards-card-padding: 45px;
+  --cards-heading-font-size: 29.6px;
+  --cards-heading-font-weight: 600;
+  --cards-heading-line-height: 26.4px;
   --cards-cta-color: #fff;
   --cards-cta-font-size: 12.8px;
   --cards-cta-font-weight: 700;
   --cards-cta-letter-spacing: 1.6px;
+  --cards-bg-size: 130%;
+  --cards-bg-size-hover: 150%;
 }
