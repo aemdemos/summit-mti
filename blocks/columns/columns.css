@@ -98,11 +98,6 @@
   width: 100%;
 }
 
-/* Hide the video URL link (kept in DOM for author editability) */
-.columns .columns-video-link {
-  display: none;
-}
-
 /* Play button overlay */
 .columns .columns-play-btn {
   position: absolute;

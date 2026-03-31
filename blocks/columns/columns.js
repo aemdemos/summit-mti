@@ -72,15 +72,18 @@ function openLightbox(videoUrl) {
 
 /**
  * Decorates a column that contains a video link.
- * Content-driven: uses author-provided image as thumbnail,
- * hides the video URL link, and adds a play button overlay.
+ * Content-driven: uses author-provided image as thumbnail.
+ * The video URL is read from the authored link, stored as a data attribute,
+ * then the link paragraph is removed from the rendered DOM.
+ * Authors edit the thumbnail image and video URL in the source document.
  */
 function setupVideoColumn(col, videoLink) {
   col.classList.add('columns-img-col');
 
-  // Hide the video URL paragraph (keep in DOM for authoring editability)
+  // Store video URL as data attribute, then remove the link from rendered DOM
+  col.dataset.videoUrl = videoLink.href;
   const linkP = videoLink.closest('p');
-  if (linkP) linkP.classList.add('columns-video-link');
+  if (linkP) linkP.remove();
 
   // Add play button overlay
   const playBtn = document.createElement('button');
@@ -88,7 +91,7 @@ function setupVideoColumn(col, videoLink) {
   playBtn.setAttribute('aria-label', 'Play video');
   col.append(playBtn);
 
-  col.addEventListener('click', () => openLightbox(videoLink.href));
+  col.addEventListener('click', () => openLightbox(col.dataset.videoUrl));
 }
 
 export default function decorate(block) {
