@@ -1,5 +1,10 @@
 @import url('./columns-tokens.css');
 
+/* Remove section margins so dark background bleeds seamlessly into adjacent sections */
+main > .section.columns-container {
+  margin: 0;
+}
+
 /* Full-width dark background via pseudo-element */
 .columns {
   position: relative;
