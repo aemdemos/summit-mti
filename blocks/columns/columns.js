@@ -1,25 +1,59 @@
 import { getBlockId } from '../../scripts/scripts.js';
 
-function getVidyardId(url) {
-  const match = url.match(/play\.vidyard\.com\/([a-zA-Z0-9]+)/);
-  return match ? match[1] : null;
-}
+const VIDEO_HOSTS = [
+  'play.vidyard.com',
+  'youtube.com',
+  'youtu.be',
+  'www.youtube.com',
+  'vimeo.com',
+  'player.vimeo.com',
+  'wistia.com',
+  'fast.wistia.com',
+];
 
-function loadVidyardApi() {
-  if (window.VidyardV4) return Promise.resolve();
-  return new Promise((resolve) => {
-    const script = document.createElement('script');
-    script.src = 'https://play.vidyard.com/embed/v4.js';
-    script.async = true;
-    script.onload = resolve;
-    document.head.append(script);
-  });
+/**
+ * Converts a video page URL into an embeddable URL.
+ * Supports YouTube, Vimeo, Vidyard, Wistia, and falls back to the original URL.
+ */
+function getEmbedUrl(url) {
+  try {
+    const u = new URL(url);
+    const { hostname, pathname, searchParams } = u;
+
+    // YouTube: youtube.com/watch?v=ID or youtu.be/ID
+    if (hostname.includes('youtube.com') && searchParams.get('v')) {
+      return `https://www.youtube.com/embed/${searchParams.get('v')}?autoplay=1`;
+    }
+    if (hostname === 'youtu.be') {
+      return `https://www.youtube.com/embed${pathname}?autoplay=1`;
+    }
+
+    // Vimeo: vimeo.com/ID
+    if (hostname === 'vimeo.com' && pathname.match(/^\/\d+/)) {
+      return `https://player.vimeo.com/video${pathname}?autoplay=1`;
+    }
+    if (hostname === 'player.vimeo.com') return `${url}${url.includes('?') ? '&' : '?'}autoplay=1`;
+
+    // Vidyard: play.vidyard.com/ID
+    if (hostname === 'play.vidyard.com') {
+      const id = pathname.replace(/^\//, '').replace(/\..*$/, '');
+      return `https://play.vidyard.com/${id}?autoplay=1`;
+    }
+
+    // Wistia: fast.wistia.com/medias/ID or wistia.com/medias/ID
+    if (hostname.includes('wistia.com')) {
+      const wistiaMatch = pathname.match(/medias\/([a-zA-Z0-9]+)/);
+      if (wistiaMatch) return `https://fast.wistia.net/embed/iframe/${wistiaMatch[1]}?autoPlay=true`;
+    }
+
+    // Fallback: use URL as-is (author-provided embed URL)
+    return url;
+  } catch {
+    return url;
+  }
 }
 
 function openLightbox(videoUrl) {
-  const videoId = getVidyardId(videoUrl);
-  if (!videoId) return;
-
   const overlay = document.createElement('div');
   overlay.classList.add('columns-lightbox');
 
@@ -31,33 +65,17 @@ function openLightbox(videoUrl) {
   closeBtn.setAttribute('aria-label', 'Close video');
   closeBtn.textContent = '\u00d7';
 
-  const player = document.createElement('div');
-  player.classList.add('columns-lightbox-player');
+  const iframe = document.createElement('iframe');
+  iframe.src = getEmbedUrl(videoUrl);
+  iframe.setAttribute('allow', 'autoplay; fullscreen; picture-in-picture');
+  iframe.setAttribute('allowfullscreen', '');
+  iframe.setAttribute('loading', 'lazy');
 
-  const embed = document.createElement('img');
-  embed.src = `https://play.vidyard.com/${videoId}.jpg`;
-  embed.className = 'vidyard-player-embed';
-  embed.dataset.uuid = videoId;
-  embed.dataset.v = '4';
-  embed.dataset.type = 'inline';
-  embed.dataset.autoplay = '1';
-  player.append(embed);
-
-  content.append(closeBtn, player);
+  content.append(closeBtn, iframe);
   overlay.append(content);
   document.body.append(overlay);
 
-  loadVidyardApi().then(() => {
-    if (window.VidyardV4) window.VidyardV4.api.renderDOMPlayers();
-  });
-
-  const close = () => {
-    if (window.VidyardV4) {
-      const players = window.VidyardV4.api.getPlayersByUUID(videoId);
-      if (players && players.length) players[0].pause();
-    }
-    overlay.remove();
-  };
+  const close = () => overlay.remove();
   closeBtn.addEventListener('click', close);
   overlay.addEventListener('click', (e) => {
     if (e.target === overlay) close();
@@ -106,8 +124,8 @@ export default function decorate(block) {
 
   [...block.children].forEach((row) => {
     [...row.children].forEach((col) => {
-      // Detect a video link (author-editable URL)
-      const videoLink = col.querySelector('a[href*="play.vidyard.com"]');
+      // Detect a video link (any supported video host)
+      const videoLink = col.querySelector(VIDEO_HOSTS.map((h) => `a[href*="${h}"]`).join(','));
       if (videoLink) {
         setupVideoColumn(col, videoLink);
         return;

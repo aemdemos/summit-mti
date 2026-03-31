@@ -138,18 +138,6 @@
   border: none;
 }
 
-/* Vidyard embed player container */
-.columns-lightbox-player {
-  width: 100%;
-  height: 100%;
-}
-
-.columns-lightbox-player .vidyard-player-embed,
-.columns-lightbox-player .vidyard-player-container {
-  width: 100% !important;
-  height: 100% !important;
-}
-
 .columns-lightbox-close {
   position: absolute;
   top: -40px;
