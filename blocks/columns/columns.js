@@ -15,36 +15,56 @@ const VIDEO_HOSTS = [
  * Converts a video page URL into an embeddable URL.
  * Supports YouTube, Vimeo, Vidyard, Wistia, and falls back to the original URL.
  */
+function getYouTubeEmbedUrl(hostname, pathname, searchParams) {
+  if (hostname.includes('youtube.com') && searchParams.get('v')) {
+    return `https://www.youtube.com/embed/${searchParams.get('v')}?autoplay=1`;
+  }
+  if (hostname === 'youtu.be') {
+    return `https://www.youtube.com/embed${pathname}?autoplay=1`;
+  }
+  return null;
+}
+
+function getVimeoEmbedUrl(hostname, pathname, url) {
+  if (hostname === 'vimeo.com' && /^\/\d+/.test(pathname)) {
+    return `https://player.vimeo.com/video${pathname}?autoplay=1`;
+  }
+  if (hostname === 'player.vimeo.com') {
+    return `${url}${url.includes('?') ? '&' : '?'}autoplay=1`;
+  }
+  return null;
+}
+
+function getVidyardEmbedUrl(hostname, pathname) {
+  if (hostname !== 'play.vidyard.com') return null;
+  const raw = pathname.startsWith('/') ? pathname.slice(1) : pathname;
+  const dotIdx = raw.indexOf('.');
+  const id = dotIdx === -1 ? raw : raw.slice(0, dotIdx);
+  return `https://play.vidyard.com/${id}?autoplay=1`;
+}
+
+function getWistiaEmbedUrl(hostname, pathname) {
+  if (!hostname.includes('wistia.com')) return null;
+  const match = pathname.match(/medias\/([a-zA-Z0-9]+)/);
+  return match ? `https://fast.wistia.net/embed/iframe/${match[1]}?autoPlay=true` : null;
+}
+
 function getEmbedUrl(url) {
   try {
     const u = new URL(url);
     const { hostname, pathname, searchParams } = u;
 
-    // YouTube: youtube.com/watch?v=ID or youtu.be/ID
-    if (hostname.includes('youtube.com') && searchParams.get('v')) {
-      return `https://www.youtube.com/embed/${searchParams.get('v')}?autoplay=1`;
-    }
-    if (hostname === 'youtu.be') {
-      return `https://www.youtube.com/embed${pathname}?autoplay=1`;
-    }
+    const youtube = getYouTubeEmbedUrl(hostname, pathname, searchParams);
+    if (youtube) return youtube;
 
-    // Vimeo: vimeo.com/ID
-    if (hostname === 'vimeo.com' && pathname.match(/^\/\d+/)) {
-      return `https://player.vimeo.com/video${pathname}?autoplay=1`;
-    }
-    if (hostname === 'player.vimeo.com') return `${url}${url.includes('?') ? '&' : '?'}autoplay=1`;
+    const vimeo = getVimeoEmbedUrl(hostname, pathname, url);
+    if (vimeo) return vimeo;
 
-    // Vidyard: play.vidyard.com/ID
-    if (hostname === 'play.vidyard.com') {
-      const id = pathname.replace(/^\//, '').replace(/\..*$/, '');
-      return `https://play.vidyard.com/${id}?autoplay=1`;
-    }
+    const vidyard = getVidyardEmbedUrl(hostname, pathname);
+    if (vidyard) return vidyard;
 
-    // Wistia: fast.wistia.com/medias/ID or wistia.com/medias/ID
-    if (hostname.includes('wistia.com')) {
-      const wistiaMatch = pathname.match(/medias\/([a-zA-Z0-9]+)/);
-      if (wistiaMatch) return `https://fast.wistia.net/embed/iframe/${wistiaMatch[1]}?autoPlay=true`;
-    }
+    const wistia = getWistiaEmbedUrl(hostname, pathname);
+    if (wistia) return wistia;
 
     // Fallback: use URL as-is (author-provided embed URL)
     return url;
