@@ -1,17 +1,48 @@
 /* tabs design tokens — Marvell markets */
 :root {
-  --tabs-panel-padding: 32px 24px;
-  --tabs-border-color: transparent;
+  --tabs-bg: #000;
+  --tabs-bleed-top: 0px;
+  --tabs-padding-top: 20px;
+  --tabs-padding-bottom: 10px;
+  --tabs-heading-color: #fff;
+  --tabs-heading-font-size: 24px;
+  --tabs-heading-font-weight: 600;
+  --tabs-heading-margin-bottom: 24px;
+  --tabs-border-color: rgb(255 255 255 / 20%);
   --tabs-transition-duration: 0.2s;
-  --tabs-tab-color: var(--border-color);
-  --tabs-tab-active-color: var(--heading-color);
+  --tabs-tab-color: #bfbfbf;
+  --tabs-tab-active-color: #fff;
   --tabs-tab-font-size: 14px;
-  --tabs-tab-active-border: 2px solid var(--heading-color);
+  --tabs-tab-font-weight: 700;
+  --tabs-tab-letter-spacing: 2.4px;
+  --tabs-tab-padding: 8px 0;
+  --tabs-tab-active-underline-color: #0072ce;
+  --tabs-tab-active-underline-height: 4px;
+  --tabs-panel-padding: 0;
+  --tabs-panel-gap: 32px;
+  --tabs-panel-heading-color: #fff;
+  --tabs-panel-heading-font-size: 24px;
+  --tabs-panel-heading-font-weight: 600;
+  --tabs-panel-text-color: #c8c9c7;
+  --tabs-panel-text-font-size: 14.4px;
+  --tabs-panel-text-line-height: 26px;
+  --tabs-cta-color: #fff;
+  --tabs-cta-font-size: 12.8px;
+  --tabs-cta-font-weight: 700;
+  --tabs-cta-letter-spacing: 1.6px;
+  --tabs-cta-padding: 15px 45px 15px 0;
+  --tabs-nav-btn-size: 48px;
+  --tabs-nav-btn-gap: 10px;
 }
 
 @media (width >= 900px) {
   :root {
-    --tabs-panel-padding: 40px 0;
+    --tabs-padding-top: 20px;
+    --tabs-padding-bottom: 0px;
+    --tabs-heading-font-size: 29.6px;
     --tabs-tab-font-size: 16px;
+    --tabs-panel-padding: 0;
+    --tabs-panel-gap: 48px;
+    --tabs-panel-heading-font-size: 29.6px;
   }
 }
