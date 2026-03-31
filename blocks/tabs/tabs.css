@@ -95,8 +95,12 @@
 }
 
 .tabs .tabs-list button:hover {
-  color: var(--tabs-tab-active-color);
+  color: var(--tabs-tab-color);
   background-color: transparent;
+}
+
+.tabs .tabs-list button:hover::after {
+  background-color: var(--tabs-tab-active-underline-color);
 }
 
 .tabs .tabs-list button[aria-selected='true'] {

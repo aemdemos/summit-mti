@@ -1,14 +1,17 @@
 /* cards design tokens — Marvell explore */
 :root {
-  --cards-grid-min-width: 300px;
-  --cards-grid-gap: 24px;
+  --cards-grid-min-width: 280px;
+  --cards-grid-gap: 30px;
   --cards-card-border-width: 0;
   --cards-card-border-color: transparent;
-  --cards-card-body-margin: 0;
-  --cards-image-aspect-ratio: 4 / 3;
-  --cards-image-object-fit: cover;
   --cards-card-min-height: 260px;
-  --cards-card-padding: 24px;
+  --cards-card-padding: 35px;
   --cards-card-overlay-bg: linear-gradient(to top, rgb(0 0 0 / 70%) 0%, transparent 60%);
-  --cards-link-color: var(--link-color);
+  --cards-heading-font-size: 24px;
+  --cards-heading-font-weight: 500;
+  --cards-heading-line-height: 1.1;
+  --cards-cta-color: #fff;
+  --cards-cta-font-size: 12.8px;
+  --cards-cta-font-weight: 700;
+  --cards-cta-letter-spacing: 1.6px;
 }
