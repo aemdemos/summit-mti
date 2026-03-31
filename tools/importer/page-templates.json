@@ -1,0 +1,84 @@
+{
+  "templates": [
+    {
+      "name": "homepage",
+      "urls": [
+        "https://www.marvell.com/"
+      ],
+      "description": "Marvell corporate homepage with hero carousel, AI infrastructure section, markets tabs, and explore cards",
+      "blocks": [
+        {
+          "name": "carousel",
+          "instances": [
+            ".rebrandingcarousel"
+          ]
+        },
+        {
+          "name": "columns",
+          "instances": [
+            ".tile-with-video"
+          ]
+        },
+        {
+          "name": "tabs",
+          "instances": [
+            ".rebrandingtabscarousel"
+          ]
+        },
+        {
+          "name": "cards",
+          "instances": [
+            ".colctrl"
+          ]
+        }
+      ],
+      "sections": [
+        {
+          "id": "section-1-hero",
+          "name": "Hero Carousel",
+          "selector": ".rebrandingcarousel",
+          "style": "dark",
+          "blocks": [
+            "carousel"
+          ],
+          "defaultContent": []
+        },
+        {
+          "id": "section-2-ai-infrastructure",
+          "name": "AI Infrastructure",
+          "selector": ".tile-with-video",
+          "style": null,
+          "blocks": [
+            "columns"
+          ],
+          "defaultContent": []
+        },
+        {
+          "id": "section-3-markets-tabs",
+          "name": "Markets Tabs",
+          "selector": ".rebrandingtabscarousel",
+          "style": "dark",
+          "blocks": [
+            "tabs"
+          ],
+          "defaultContent": []
+        },
+        {
+          "id": "section-4-explore",
+          "name": "More to Explore",
+          "selector": [
+            ".richtext.rebrand-marvll-rictext-center",
+            ".colctrl"
+          ],
+          "style": null,
+          "blocks": [
+            "cards"
+          ],
+          "defaultContent": [
+            ".richtext.rebrand-marvll-rictext-center h3"
+          ]
+        }
+      ]
+    }
+  ]
+}

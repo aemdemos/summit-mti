@@ -1,4 +1,4 @@
-import { getMetadata } from '../../scripts/aem.js';
+import { getMetadata, decorateIcons } from '../../scripts/aem.js';
 import { loadFragment } from '../fragment/fragment.js';
 
 // media query match that indicates mobile/tablet width
@@ -40,7 +40,7 @@ function closeOnFocusLost(e) {
 
 function openOnKeydown(e) {
   const focused = document.activeElement;
-  const isNavDrop = focused.className === 'nav-drop';
+  const isNavDrop = focused.classList.contains('nav-drop');
   if (isNavDrop && (e.code === 'Enter' || e.code === 'Space')) {
     const dropExpanded = focused.getAttribute('aria-expanded') === 'true';
     // eslint-disable-next-line no-use-before-define
@@ -63,6 +63,11 @@ function toggleAllNavSections(sections, expanded = false) {
   sections.querySelectorAll('.nav-sections .default-content-wrapper > ul > li').forEach((section) => {
     section.setAttribute('aria-expanded', expanded);
   });
+  // hide overlay when collapsing all sections
+  const overlay = document.querySelector('.nav-overlay');
+  if (overlay && !expanded) {
+    overlay.classList.remove('nav-overlay-active');
+  }
 }
 
 /**
@@ -175,6 +180,94 @@ async function buildBreadcrumbs() {
 }
 
 /**
+ * Detects mega menu items and adds appropriate classes.
+ * A nav-drop is a mega menu if its child <ul> contains <li> with
+ * nested <ul> (3+ levels of nesting indicating category groups).
+ * @param {Element} navSections The nav sections element
+ */
+function decorateMegaMenu(navSections) {
+  navSections.querySelectorAll('.nav-drop').forEach((navDrop) => {
+    const childUl = navDrop.querySelector(':scope > ul');
+    if (!childUl) return;
+    // Check for deeply nested content (li > strong + ul pattern = category groups)
+    const hasCategories = childUl.querySelector(':scope > li > ul');
+    if (hasCategories) {
+      navDrop.classList.add('nav-mega');
+      // Mark italic items as sub-headers (e.g. "BY TYPE", "BY MARKET")
+      // Support both li > em (local) and li > p > em (DA)
+      childUl.querySelectorAll(':scope > li > em, :scope > li > p > em').forEach((em) => {
+        em.closest('li').classList.add('mega-sub-header');
+      });
+      // Mark bold items that have child <ul> as category columns
+      // Support both li > strong (local) and li > p > strong (DA)
+      childUl.querySelectorAll(':scope > li > strong, :scope > li > p > strong').forEach((strong) => {
+        const li = strong.closest('li');
+        if (li.querySelector(':scope > ul')) {
+          li.classList.add('mega-category');
+        }
+      });
+      // Mark headingless items that have child <ul> as continuation columns
+      // This allows authors to split a long list into multiple columns by
+      // creating a new list item with nested links but no bold heading
+      childUl.querySelectorAll(':scope > li').forEach((li) => {
+        if (li.classList.length > 0) return; // already classified
+        if (li.querySelector(':scope > ul') && !li.querySelector(':scope > strong, :scope > p > strong')) {
+          li.classList.add('mega-category');
+        }
+      });
+      // Mark categories with many items for potential multi-column layout
+      childUl.querySelectorAll('.mega-category > ul').forEach((catUl) => {
+        if (catUl.children.length >= 6) {
+          catUl.closest('.mega-category').classList.add('mega-wide');
+        }
+      });
+      // Mark direct links at the same level as market links
+      // Support both li > a (local) and li > p > a (DA)
+      childUl.querySelectorAll(':scope > li > a, :scope > li > p > a').forEach((a) => {
+        const li = a.closest('li');
+        if (!li.classList.contains('mega-category') && !li.classList.contains('mega-sub-header')) {
+          li.classList.add('mega-market-link');
+        }
+      });
+
+      // Detect promo card items (li with picture in mega menu)
+      childUl.querySelectorAll(':scope > li').forEach((li) => {
+        const pic = li.querySelector('picture');
+        if (pic) {
+          li.classList.remove('mega-market-link');
+          li.classList.add('mega-promo');
+          // Use the picture's img src as background image
+          const img = pic.querySelector('img');
+          if (img) {
+            li.style.backgroundImage = `url('${img.src}')`;
+          }
+          pic.remove();
+          // Style the CTA link as a button
+          const ctaLink = li.querySelector(':scope > a, :scope > p > a');
+          if (ctaLink) {
+            ctaLink.classList.add('mega-promo-cta');
+          }
+          // Wrap remaining text nodes and strong in a container
+          const textWrapper = document.createElement('div');
+          textWrapper.classList.add('mega-promo-text');
+          [...li.childNodes].forEach((node) => {
+            if (node.nodeType === Node.TEXT_NODE
+              || (node.nodeType === Node.ELEMENT_NODE
+                && node.tagName !== 'A'
+                && !node.classList.contains('mega-promo-cta'))) {
+              textWrapper.append(node);
+            }
+          });
+          li.prepend(textWrapper);
+          // Mark parent mega menu as having promo for CSS padding
+          navDrop.classList.add('has-mega-promo');
+        }
+      });
+    }
+  });
+}
+
+/**
  * loads and decorates the header, mainly the nav
  * @param {Element} block The header block element
  */
@@ -207,25 +300,161 @@ export default async function decorate(block) {
   if (navSections) {
     navSections.querySelectorAll(':scope .default-content-wrapper > ul > li').forEach((navSection) => {
       if (navSection.querySelector('ul')) navSection.classList.add('nav-drop');
-      navSection.addEventListener('click', () => {
+      navSection.addEventListener('click', (e) => {
         if (isDesktop.matches) {
+          // Prevent click on links inside mega menu from toggling
+          if (e.target.closest('a') && e.target.closest('.nav-mega > ul')) return;
           const expanded = navSection.getAttribute('aria-expanded') === 'true';
           toggleAllNavSections(navSections);
           navSection.setAttribute('aria-expanded', expanded ? 'false' : 'true');
+          // Show/hide overlay for mega menu
+          const overlay = document.querySelector('.nav-overlay');
+          if (overlay && navSection.classList.contains('nav-mega')) {
+            overlay.classList.toggle('nav-overlay-active', !expanded);
+          }
+          // Close search bar and language selector when opening a mega menu
+          const searchBar = block.querySelector('.nav-search-bar');
+          if (searchBar) {
+            searchBar.classList.remove('nav-search-open');
+            block.querySelector('.nav-search-btn')?.classList.remove('nav-search-active');
+          }
+          const langSel = block.querySelector('.nav-lang-selector');
+          if (langSel) langSel.classList.remove('nav-lang-open');
         }
       });
     });
     navSections.querySelectorAll('.button-container').forEach((buttonContainer) => {
       buttonContainer.classList.remove('button-container');
-      buttonContainer.querySelector('.button').classList.remove('button');
+      buttonContainer.querySelector('.button')?.classList.remove('button');
     });
+    // Decorate mega menu structure
+    decorateMegaMenu(navSections);
   }
 
+  // Decorate icons in nav tools
   const navTools = nav.querySelector('.nav-tools');
   if (navTools) {
-    const search = navTools.querySelector('a[href*="search"]');
-    if (search && search.textContent === '') {
-      search.setAttribute('aria-label', 'Search');
+    // Convert icon images (local <img> or DA <picture>) to icon spans
+    // Icon name is derived from alt text, so authors control icons via the document
+    navTools.querySelectorAll('picture, img').forEach((el) => {
+      const img = el.tagName === 'PICTURE' ? el.querySelector('img') : el;
+      if (!img) return;
+      const alt = img.getAttribute('alt');
+      if (alt) {
+        const span = document.createElement('span');
+        span.className = `icon icon-${alt}`;
+        (el.tagName === 'PICTURE' ? el : img).replaceWith(span);
+      }
+    });
+    decorateIcons(navTools);
+    // Remove button classes from tools
+    navTools.querySelectorAll('.button-container').forEach((bc) => {
+      bc.classList.remove('button-container');
+      bc.querySelector('.button')?.classList.remove('button');
+    });
+    // Build search bar toggle from search icon
+    const searchLi = navTools.querySelector('.icon-search')?.closest('li');
+    if (searchLi) {
+      searchLi.classList.add('nav-search-btn');
+
+      const closeSearch = () => {
+        const bar = block.querySelector('.nav-search-bar');
+        if (bar) bar.classList.remove('nav-search-open');
+        searchLi.classList.remove('nav-search-active');
+        const overlay = document.querySelector('.nav-overlay');
+        if (overlay) overlay.classList.remove('nav-overlay-active');
+      };
+
+      const openSearch = () => {
+        let bar = block.querySelector('.nav-search-bar');
+        if (!bar) {
+          bar = document.createElement('div');
+          bar.className = 'nav-search-bar';
+          const form = document.createElement('form');
+          form.setAttribute('role', 'search');
+          form.addEventListener('submit', (ev) => {
+            ev.preventDefault();
+            const query = form.querySelector('input').value.trim();
+            if (query) {
+              window.location.href = `/search?q=${encodeURIComponent(query)}`;
+            }
+          });
+          const input = document.createElement('input');
+          input.type = 'text';
+          input.setAttribute('placeholder', 'Search Marvell.com');
+          input.setAttribute('aria-label', 'Search');
+          form.append(input);
+          bar.append(form);
+          block.append(bar);
+        }
+        bar.classList.add('nav-search-open');
+        searchLi.classList.add('nav-search-active');
+        // Close any open mega menus and language selector
+        toggleAllNavSections(navSections, false);
+        const langSel = block.querySelector('.nav-lang-selector');
+        if (langSel) langSel.classList.remove('nav-lang-open');
+        // Show overlay behind search bar
+        const overlay = document.querySelector('.nav-overlay');
+        if (overlay) overlay.classList.add('nav-overlay-active');
+        bar.querySelector('input').focus();
+      };
+
+      searchLi.addEventListener('click', () => {
+        const bar = block.querySelector('.nav-search-bar');
+        if (bar && bar.classList.contains('nav-search-open')) {
+          closeSearch();
+        } else {
+          openSearch();
+        }
+      });
+
+      // Close search bar on Escape
+      window.addEventListener('keydown', (e) => {
+        if (e.code === 'Escape') closeSearch();
+      });
+    }
+
+    // Build language selector dropdown from globe icon with nested links
+    const globeLi = navTools.querySelector('.icon-globe')?.closest('li');
+    const langUl = globeLi?.querySelector(':scope > ul');
+    if (globeLi && langUl) {
+      globeLi.classList.add('nav-lang-selector');
+      // Mark the current language as active
+      const currentUrl = window.location.origin;
+      langUl.querySelectorAll('a').forEach((a) => {
+        const linkUrl = new URL(a.href, window.location.origin).origin;
+        if (linkUrl === currentUrl) {
+          a.closest('li').classList.add('nav-lang-active');
+        }
+      });
+      const closeLang = () => {
+        globeLi.classList.remove('nav-lang-open');
+        const overlay = document.querySelector('.nav-overlay');
+        if (overlay) overlay.classList.remove('nav-overlay-active');
+      };
+
+      // Toggle dropdown on click
+      globeLi.addEventListener('click', (e) => {
+        if (e.target.closest('a')) return; // let link clicks navigate
+        e.stopPropagation();
+        const isOpen = globeLi.classList.toggle('nav-lang-open');
+        const overlay = document.querySelector('.nav-overlay');
+        if (isOpen) {
+          // Close any open mega menus first
+          toggleAllNavSections(navSections, false);
+          if (overlay) overlay.classList.add('nav-overlay-active');
+          // Close on outside click
+          const closeHandler = (ev) => {
+            if (!globeLi.contains(ev.target)) {
+              closeLang();
+              document.removeEventListener('click', closeHandler);
+            }
+          };
+          document.addEventListener('click', closeHandler);
+        } else if (overlay) {
+          overlay.classList.remove('nav-overlay-active');
+        }
+      });
     }
   }
 
@@ -246,6 +475,23 @@ export default async function decorate(block) {
   navWrapper.className = 'nav-wrapper';
   navWrapper.append(nav);
   block.append(navWrapper);
+
+  // Create overlay for mega menu backdrop
+  const overlay = document.createElement('div');
+  overlay.className = 'nav-overlay';
+  overlay.addEventListener('click', () => {
+    toggleAllNavSections(navSections, false);
+    overlay.classList.remove('nav-overlay-active');
+    // Also close language selector and search bar if open
+    const langSel = block.querySelector('.nav-lang-selector');
+    if (langSel) langSel.classList.remove('nav-lang-open');
+    const searchBar = block.querySelector('.nav-search-bar');
+    if (searchBar) {
+      searchBar.classList.remove('nav-search-open');
+      block.querySelector('.nav-search-btn')?.classList.remove('nav-search-active');
+    }
+  });
+  block.append(overlay);
 
   if (getMetadata('breadcrumbs').toLowerCase() === 'true') {
     navWrapper.append(await buildBreadcrumbs());

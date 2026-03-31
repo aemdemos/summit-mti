@@ -14,12 +14,77 @@ function createSlide(row, slideIndex, carouselId) {
     slide.append(column);
   });
 
+  // Handle dual images: if image column has 2+ images,
+  // first = slide background, remaining = foreground image(s)
+  const imageCol = slide.querySelector('.carousel-slide-image');
+  if (imageCol) {
+    const imgs = imageCol.querySelectorAll('img');
+    if (imgs.length >= 2) {
+      const bgImg = imgs[0];
+      const bgSrc = bgImg.currentSrc || bgImg.src;
+      slide.classList.add('has-bg-image');
+      slide.style.backgroundImage = `url('${bgSrc}')`;
+      slide.style.backgroundSize = 'cover';
+      slide.style.backgroundPosition = 'center';
+      const bgPicture = bgImg.closest('picture') || bgImg;
+      const bgParent = bgPicture.parentElement;
+      bgPicture.remove();
+      if (bgParent && bgParent !== imageCol && !bgParent.children.length) {
+        bgParent.remove();
+      }
+    }
+  }
+
   const labeledBy = slide.querySelector('h1, h2, h3, h4, h5, h6');
   if (labeledBy) {
     slide.setAttribute('aria-labelledby', labeledBy.getAttribute('id'));
   }
 
   return slide;
+}
+
+const AUTOPLAY_INTERVAL = 5000;
+
+function startAutoplay(block) {
+  let timer = null;
+
+  const advance = () => {
+    const current = parseInt(block.dataset.activeSlide, 10) || 0;
+    showSlide(block, current + 1, 'auto');
+  };
+
+  const start = () => {
+    if (!timer) timer = setInterval(advance, AUTOPLAY_INTERVAL);
+  };
+
+  const stop = () => {
+    clearInterval(timer);
+    timer = null;
+  };
+
+  const reset = () => {
+    stop();
+    start();
+  };
+
+  // Pause on hover
+  block.addEventListener('mouseenter', stop);
+  block.addEventListener('mouseleave', start);
+
+  // Reset timer on manual interaction
+  block.addEventListener('click', (e) => {
+    if (e.target.closest('button')) reset();
+  });
+
+  // Pause when page hidden or carousel out of viewport
+  document.addEventListener('visibilitychange', () => {
+    if (document.hidden) stop(); else start();
+  });
+
+  const observer = new IntersectionObserver(([entry]) => {
+    if (entry.isIntersecting) start(); else stop();
+  }, { threshold: 0.5 });
+  observer.observe(block);
 }
 
 export default async function decorate(block) {
@@ -64,7 +129,8 @@ export default async function decorate(block) {
       const current = parseInt(block.dataset.activeSlide, 10) || 0;
       const next = e.key === 'ArrowLeft' ? current - 1 : current + 1;
       e.preventDefault();
-      showSlide(block, next, 'smooth');
+      showSlide(block, next, 'auto');
     });
+    startAutoplay(block);
   }
 }

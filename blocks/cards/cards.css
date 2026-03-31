@@ -9,21 +9,97 @@
   gap: var(--cards-grid-gap);
 }
 
+/* Card tile — image is CSS background-image set by JS */
 .cards > ul > li {
+  box-sizing: border-box;
   border: var(--cards-card-border-width) solid var(--cards-card-border-color);
-  background-color: var(--background-color);
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-end;
+  min-height: 200px;
+  padding: var(--cards-card-padding);
+  background-size: var(--cards-bg-size);
+  background-position: center;
+  background-repeat: no-repeat;
+  transition: background-size 0.15s ease-out;
 }
 
+.cards > ul > li:hover {
+  background-size: var(--cards-bg-size-hover);
+}
+
+/* Body overlays on image */
 .cards .cards-card-body {
-  margin: var(--cards-card-body-margin);
+  position: relative;
+  z-index: 1;
 }
 
-.cards .cards-card-image {
-  line-height: 0;
+.cards .cards-card-body p {
+  margin: 0;
 }
 
-.cards > ul > li img {
-  width: 100%;
-  aspect-ratio: var(--cards-image-aspect-ratio);
-  object-fit: var(--cards-image-object-fit);
+/* Card heading */
+.cards .cards-card-body h3 {
+  color: #fff;
+  font-size: var(--cards-heading-font-size);
+  font-weight: var(--cards-heading-font-weight);
+  line-height: var(--cards-heading-line-height);
+  margin: 0 0 8px;
+}
+
+/* Card CTA link — white text with blue arrow (same as tabs CTA) */
+.cards .cards-card-body a {
+  display: inline-block;
+  position: relative;
+  color: var(--cards-cta-color);
+  font-size: var(--cards-cta-font-size);
+  font-weight: var(--cards-cta-font-weight);
+  text-decoration: none;
+  text-transform: uppercase;
+  letter-spacing: var(--cards-cta-letter-spacing);
+  padding-right: 33px;
+}
+
+.cards .cards-card-body a::after {
+  content: '';
+  position: absolute;
+  right: 10px;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 10px;
+  height: 15px;
+  background: url('/icons/nav-arrow-right.svg') no-repeat center / contain;
+  transition: right 0.25s ease-out;
+}
+
+.cards .cards-card-body a:hover::after {
+  right: 3px;
+}
+
+/* Section heading — "More to Explore" */
+.cards-container > .default-content-wrapper {
+  padding: 20px 0 0;
+}
+
+.cards-container > .default-content-wrapper h3 {
+  text-align: center;
+  font-size: var(--cards-heading-font-size);
+  font-weight: var(--cards-heading-font-weight);
+  margin: 0 0 24px;
+}
+
+/* Hide empty cards blocks */
+.cards > ul:empty {
+  display: none;
+}
+
+.cards:empty {
+  display: none;
+}
+
+@media (width >= 900px) {
+  .cards > ul > li {
+    min-height: 260px;
+  }
 }

@@ -118,7 +118,7 @@ function getCurrentSlideIndexFromScroll(container, slides) {
  * @param {string} behavior - 'smooth' or 'auto'
  * @param {Object} options - Selector options
  */
-export function showSlide(block, slideIndex = 0, behavior = 'smooth', options = {}) {
+export function showSlide(block, slideIndex = 0, behavior = 'auto', options = {}) {
   const opts = getSliderOpts(options);
   const container = block.querySelector(opts.get('slidesContainer'));
   const slides = block.querySelectorAll(opts.get('slideSelector'));
@@ -153,7 +153,7 @@ function bindEvents(block, options = {}) {
         const indicator = e.currentTarget.closest(opts.get('indicatorItemSelector'));
         if (indicator) {
           const target = parseInt(getDatasetAttr(indicator, targetSlideAttr), 10);
-          if (!Number.isNaN(target)) showSlide(block, target, 'smooth', options);
+          if (!Number.isNaN(target)) showSlide(block, target, 'auto', options);
         }
       });
     });
@@ -167,7 +167,7 @@ function bindEvents(block, options = {}) {
       const current = container && slides.length
         ? getCurrentSlideIndexFromScroll(container, slides)
         : parseInt(getDatasetAttr(block, activeSlideAttr), 10) || 0;
-      showSlide(block, current - 1, 'smooth', options);
+      showSlide(block, current - 1, 'auto', options);
     });
   }
 
@@ -179,7 +179,7 @@ function bindEvents(block, options = {}) {
       const current = container && slides.length
         ? getCurrentSlideIndexFromScroll(container, slides)
         : parseInt(getDatasetAttr(block, activeSlideAttr), 10) || 0;
-      showSlide(block, current + 1, 'smooth', options);
+      showSlide(block, current + 1, 'auto', options);
     });
   }
 

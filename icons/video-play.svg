@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg width="100px" height="100px" viewBox="0 0 72 72" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+    <title>nav-arrow-video-right</title>
+    <g id="Page-1" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
+        <g id="nav-arrow-video-right" transform="translate(1.000000, 1.000000)" fill-rule="nonzero">
+            <g id="nav-arrow-right" transform="translate(26.250000, 17.500000)" fill="#FFFFFF">
+                <g id="Group-8" transform="translate(12.031250, 17.500000) rotate(90.000000) translate(-12.031250, -17.500000) translate(-4.375000, 6.562500)">
+                    <path d="M27.125,15.3125 L31.71875,21.875 L1.09375,21.875 L5.6875,15.3125 L27.125,15.3125 Z M16.40625,0 L24.0625,10.9375 L8.75,10.9375 L16.40625,0 Z" id="Combined-Shape"></path>
+                </g>
+            </g>
+            <circle id="Oval" stroke="#FFFFFF" stroke-width="2" fill-opacity="0" fill="#D8D8D8" cx="35" cy="35" r="35"></circle>
+        </g>
+    </g>
+</svg>
