@@ -11,16 +11,18 @@
 
 /* Card tile — image is CSS background-image set by JS */
 .cards > ul > li {
+  box-sizing: border-box;
   border: var(--cards-card-border-width) solid var(--cards-card-border-color);
   position: relative;
   display: flex;
   flex-direction: column;
   justify-content: flex-end;
+  min-height: 200px;
+  padding: var(--cards-card-padding);
   background-size: var(--cards-bg-size);
   background-position: center;
   background-repeat: no-repeat;
   transition: background-size 0.15s ease-out;
-  padding: 132px var(--cards-card-padding) var(--cards-card-padding);
 }
 
 .cards > ul > li:hover {
@@ -46,24 +48,42 @@
   margin: 0 0 8px;
 }
 
-/* Card CTA link — white text, uppercase, no arrow */
+/* Card CTA link — white text with blue arrow (same as tabs CTA) */
 .cards .cards-card-body a {
   display: inline-block;
+  position: relative;
   color: var(--cards-cta-color);
   font-size: var(--cards-cta-font-size);
   font-weight: var(--cards-cta-font-weight);
   text-decoration: none;
   text-transform: uppercase;
   letter-spacing: var(--cards-cta-letter-spacing);
+  padding-right: 33px;
+}
+
+.cards .cards-card-body a::after {
+  content: '';
+  position: absolute;
+  right: 10px;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 10px;
+  height: 15px;
+  background: url('/icons/nav-arrow-right.svg') no-repeat center / contain;
+  transition: right 0.25s ease-out;
 }
 
 .cards .cards-card-body a:hover {
   opacity: 0.8;
 }
 
+.cards .cards-card-body a:hover::after {
+  right: 3px;
+}
+
 /* Section heading — "More to Explore" */
 .cards-container > .default-content-wrapper {
-  padding: 80px 0 0;
+  padding: 20px 0 0;
 }
 
 .cards-container > .default-content-wrapper h3 {
@@ -84,6 +104,6 @@
 
 @media (width >= 900px) {
   .cards > ul > li {
-    padding-top: 216px;
+    min-height: 260px;
   }
 }
