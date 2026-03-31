@@ -16,7 +16,10 @@ function loadVidyardApi() {
   });
 }
 
-function openLightbox(videoId) {
+function openLightbox(videoUrl) {
+  const videoId = getVidyardId(videoUrl);
+  if (!videoId) return;
+
   const overlay = document.createElement('div');
   overlay.classList.add('columns-lightbox');
 
@@ -67,22 +70,25 @@ function openLightbox(videoId) {
   });
 }
 
-function setupVideoColumn(col, videoId) {
+/**
+ * Decorates a column that contains a video link.
+ * Content-driven: uses author-provided image as thumbnail,
+ * hides the video URL link, and adds a play button overlay.
+ */
+function setupVideoColumn(col, videoLink) {
   col.classList.add('columns-img-col');
 
-  const img = document.createElement('img');
-  img.src = `https://play.vidyard.com/${videoId}.jpg`;
-  img.alt = '';
+  // Hide the video URL paragraph (keep in DOM for authoring editability)
+  const linkP = videoLink.closest('p');
+  if (linkP) linkP.classList.add('columns-video-link');
 
-  const p = document.createElement('p');
-  p.append(img);
-  col.replaceChildren(p);
-
+  // Add play button overlay
   const playBtn = document.createElement('button');
   playBtn.classList.add('columns-play-btn');
   playBtn.setAttribute('aria-label', 'Play video');
   col.append(playBtn);
-  col.addEventListener('click', () => openLightbox(videoId));
+
+  col.addEventListener('click', () => openLightbox(videoLink.href));
 }
 
 export default function decorate(block) {
@@ -97,36 +103,18 @@ export default function decorate(block) {
 
   [...block.children].forEach((row) => {
     [...row.children].forEach((col) => {
-      // Check for author-editable video link
+      // Detect a video link (author-editable URL)
       const videoLink = col.querySelector('a[href*="play.vidyard.com"]');
       if (videoLink) {
-        const videoId = getVidyardId(videoLink.href);
-        if (videoId) {
-          setupVideoColumn(col, videoId);
-          return;
-        }
+        setupVideoColumn(col, videoLink);
+        return;
       }
 
-      // Fallback: detect Vidyard thumbnail in image src
+      // Image-only column (no heading = image column)
       const pic = col.querySelector('picture');
       const img = col.querySelector('img');
-
-      if (pic || img) {
-        if (!col.querySelector('h1, h2, h3, h4, h5, h6')) {
-          col.classList.add('columns-img-col');
-        }
-
-        const imgEl = pic ? pic.querySelector('img') : img;
-        if (imgEl) {
-          const videoId = getVidyardId(imgEl.src);
-          if (videoId) {
-            const playBtn = document.createElement('button');
-            playBtn.classList.add('columns-play-btn');
-            playBtn.setAttribute('aria-label', 'Play video');
-            col.append(playBtn);
-            col.addEventListener('click', () => openLightbox(videoId));
-          }
-        }
+      if ((pic || img) && !col.querySelector('h1, h2, h3, h4, h5, h6')) {
+        col.classList.add('columns-img-col');
       }
     });
   });
