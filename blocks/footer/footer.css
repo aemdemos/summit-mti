@@ -35,7 +35,7 @@ footer .footer-columns {
   display: grid;
   grid-template-columns: 1fr;
   gap: 32px;
-  margin-bottom: 60px;
+  margin-bottom: 40px;
 }
 
 @media (width >= 600px) {
