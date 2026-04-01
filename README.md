@@ -1,5 +1,4 @@
-# Your Project's Title...
-Marvell Technology, Inc. - EDS migration 
+# Marvell Technology, Inc. - EDS migration 
 
 ## Environments
 - Preview: https://main--summit-mti--aemdemos.aem.page/
