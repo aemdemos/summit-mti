@@ -6,13 +6,24 @@ footer {
   font-size: 16px;
 }
 
-footer .footer > div {
-  margin: auto;
-  max-width: var(--footer-max-width);
+footer .footer .section {
+  margin: 0;
 }
 
 footer .footer .default-content-wrapper {
-  padding: 79px 30px 55px;
+  margin: auto;
+  max-width: var(--footer-max-width);
+  padding: 0 30px;
+}
+
+/* First section (columns) gets top padding */
+footer .footer .section:first-child .default-content-wrapper {
+  padding-top: 79px;
+}
+
+/* Last section (copyright) gets bottom padding */
+footer .footer .section:last-child .default-content-wrapper {
+  padding-bottom: 55px;
 }
 
 footer .footer p {

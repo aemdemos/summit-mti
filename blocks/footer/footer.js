@@ -16,12 +16,13 @@ export default async function decorate(block) {
   const footer = document.createElement('div');
   while (fragment.firstElementChild) footer.append(fragment.firstElementChild);
 
-  // Build structured footer from content
-  const section = footer.querySelector('.section');
-  if (section) {
-    const wrapper = section.querySelector('.default-content-wrapper');
+  const sections = footer.querySelectorAll('.section');
+
+  // Section 1: Link columns (h5 + ul pairs)
+  const columnsSection = sections[0];
+  if (columnsSection) {
+    const wrapper = columnsSection.querySelector('.default-content-wrapper');
     if (wrapper) {
-      // Build link columns from h5 + ul pairs
       const columns = document.createElement('div');
       columns.className = 'footer-columns';
 
@@ -32,7 +33,6 @@ export default async function decorate(block) {
         const heading = h5.cloneNode(true);
         col.append(heading);
 
-        // Get the ul that follows this h5
         const next = h5.nextElementSibling;
         if (next && next.tagName === 'UL') {
           col.append(next.cloneNode(true));
@@ -40,22 +40,36 @@ export default async function decorate(block) {
         columns.append(col);
       });
 
-      // Find social links row (paragraph containing icon spans)
-      const allPs = wrapper.querySelectorAll('p');
-      const socialP = [...allPs].find((p) => p.querySelector('.icon'));
+      wrapper.textContent = '';
+      wrapper.append(columns);
+    }
+  }
+
+  // Section 2: Social icons
+  const socialSection = sections[1];
+  if (socialSection) {
+    const wrapper = socialSection.querySelector('.default-content-wrapper');
+    if (wrapper) {
+      const socialP = wrapper.querySelector('p');
       const socialRow = document.createElement('div');
       socialRow.className = 'footer-social';
-      if (socialP) {
-        socialRow.append(socialP.cloneNode(true));
-      }
+      if (socialP) socialRow.append(socialP.cloneNode(true));
 
-      // Find copyright row (paragraph containing "Copyright")
-      const copyrightP = [...allPs].find((p) => p.textContent.includes('Copyright'));
+      wrapper.textContent = '';
+      wrapper.append(socialRow);
+    }
+  }
+
+  // Section 3: Copyright
+  const copyrightSection = sections[2];
+  if (copyrightSection) {
+    const wrapper = copyrightSection.querySelector('.default-content-wrapper');
+    if (wrapper) {
+      const copyrightP = wrapper.querySelector('p');
       const copyrightRow = document.createElement('div');
       copyrightRow.className = 'footer-copyright';
       if (copyrightP) {
         const clone = copyrightP.cloneNode(true);
-        // Update copyright year dynamically
         const year = new Date().getFullYear();
         clone.childNodes.forEach((node) => {
           if (node.nodeType === Node.TEXT_NODE) {
@@ -65,9 +79,8 @@ export default async function decorate(block) {
         copyrightRow.append(clone);
       }
 
-      // Replace section content with structured footer
       wrapper.textContent = '';
-      wrapper.append(columns, socialRow, copyrightRow);
+      wrapper.append(copyrightRow);
     }
   }
 
