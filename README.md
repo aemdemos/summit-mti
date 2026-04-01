@@ -1,9 +1,9 @@
 # Your Project's Title...
-Your project's description...
+Marvell Technology, Inc. - EDS migration 
 
 ## Environments
-- Preview: https://main--ise-boilerplate--aemdemos.aem.page/
-- Live: https://main--ise-boilerplate--aemdemos.aem.live/
+- Preview: https://main--summit-mti--aemdemos.aem.page/
+- Live: https://main--summit-mti--aemdemos.aem.live/
 
 ## Documentation
 
